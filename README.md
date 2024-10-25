@@ -10,6 +10,17 @@
 
 <p>Welcome to <strong>APP3</strong>! This project is dedicated to...</p>
 
+<h2 align="left">👥 Team Members</h2>
+<ul>
+  <li><a href="https://github.com/orlettienzo">Enzo Andrade Orletti</a></li>
+  <li><a href="https://github.com/VikPr555">Viktor Profirov</a></li>
+  <li>Jad M'Rabti</li>
+  <li>Pedro Sibomana</li>
+</ul>
+
+<h2 align="left">📜 Project Description</h2>
+<p>This project aims to...</p>
+
 
 
 
