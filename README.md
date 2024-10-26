@@ -1,16 +1,13 @@
-<h1 align="left"> <span style="font-family: 'Georgia', serif;">APP3</span> </h1>
+<h1 align="left"> <span style="font-family: 'Georgia', serif;">🌟 APP3 🌟</span> </h1>
 
 
-<p align="left">
-  <img src="./images/mini.png" alt="Mini logo" width="350">
-  <img src="./images/logo.png" alt="APP3 Logo" width="350">
-  <img src="./images/squad.png" alt="Squad Photo" width="350">
-  <img src="./images/mini.png" alt="Mini logo" width="350">
+<p style="display: inline;">
+  <img src="./images/mini.png" alt="Mini logo" width="300" style="margin: 0; padding: 0;">
+  <img src="./images/logo.png" alt="APP3 Logo" width="300" style="margin: 0; padding: 0;">
+  <img src="./images/squad.png" alt="Squad Photo" width="300" style="margin: 0; padding: 0;">
 </p>
 
-<p>Welcome to <strong>APP3</strong>! This project is dedicated to...</p>
-
-<h2 align="left">👥 Team Members</h2>
+<h2 align="left">👥 Groupe B.20</h2>
 <ul>
   <li><a href="https://github.com/orlettienzo">Enzo Andrade Orletti</a></li>
   <li><a href="https://github.com/VikPr555">Viktor Profirov</a></li>
@@ -18,8 +15,16 @@
   <li>Pedro Sibomana</li>
 </ul>
 
-<h2 align="left">📜 Project Description</h2>
-<p>This project aims to...</p>
+<h2 align="left">📜 Description de notre projet</h2>
+<p>Projet sur le <strong>micro:bit</strong></p>
+
+<h2 align="left">📞 Contact</h2>
+<ul>
+  <li>enzo.andrade@student.uclouvain.be</li>
+  <li>viktor.profirov@student.uclouvain.be</li>
+  <li>jad.mrabti@student.uclouvain.be</li>
+  <li>pedro.sibomana@student.uclouvain.be</li>
+</ul>
 
 
 
