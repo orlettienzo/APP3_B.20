@@ -2,9 +2,9 @@
 
 
 <p style="display: inline;">
-  <img src="./images/mini.png" alt="Mini logo" width="300" style="margin: 0; padding: 0;">
-  <img src="./images/logo.png" alt="APP3 Logo" width="300" style="margin: 0; padding: 0;">
-  <img src="./images/squad.png" alt="Squad Photo" width="300" style="margin: 0; padding: 0;">
+  <img src="./images/mini.png" alt="Mini logo" width="250" style="margin: 0; padding: 0;">
+  <img src="./images/logo.png" alt="APP3 Logo" width="250" style="margin: 0; padding: 0;">
+  <img src="./images/squad.png" alt="Squad Photo" width="250" style="margin: 0; padding: 0;">
 </p>
 
 <h2 align="left">👥 Groupe B.20</h2>
