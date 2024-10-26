@@ -34,6 +34,10 @@
   <li>pedro.sibomana@student.uclouvain.be</li>
 </ul>
 
+<h2 align="left">🎬 Vidéo Exemple</h2>
+<p>📹 Vous aurez bientôt le lien vers la vidéo de démonstration de notre projet 🤠</p>
+
+
 
 
 
