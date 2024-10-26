@@ -2,21 +2,29 @@
 
 
 <p style="display: inline;">
+  <img src="./images/background.png" alt="Background image" width="750" style="margin: 0; padding: 0;">
+</p>
+
+<h2 align="left">📜 Description de notre projet</h2>
+<p>Projet sur le <strong>micro:bit</strong></p>
+
+<h2 align="left">👥 Groupe B.20</h2>
+
+<p style="display: inline;">
   <img src="./images/mini.png" alt="Mini logo" width="250" style="margin: 0; padding: 0;">
   <img src="./images/logo.png" alt="APP3 Logo" width="250" style="margin: 0; padding: 0;">
   <img src="./images/squad.png" alt="Squad Photo" width="250" style="margin: 0; padding: 0;">
 </p>
 
-<h2 align="left">👥 Groupe B.20</h2>
 <ul>
   <li><a href="https://github.com/orlettienzo">Enzo Andrade Orletti</a></li>
   <li><a href="https://github.com/VikPr555">Viktor Profirov</a></li>
   <li>Jad M'Rabti</li>
   <li>Pedro Sibomana</li>
+  
 </ul>
 
-<h2 align="left">📜 Description de notre projet</h2>
-<p>Projet sur le <strong>micro:bit</strong></p>
+
 
 <h2 align="left">📞 Contact</h2>
 <ul>
