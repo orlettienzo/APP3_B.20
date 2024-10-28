@@ -7,6 +7,15 @@ import music
 #radio.config(group=23, channel=2, address=0x11111111)
 #default : channel=7 (0-83), address = 0x75626974, group = 0 (0-255)
 
+#1. Definition de l'image initiale pour le be:bi enfant
+baby_image = Image("99990:"     
+                "90000:"        
+                "99900:"        
+                "90000:"        
+                "99990:")
+
+
+display.show(baby_image) # image initale = lettre "E"
 
 
 def hashing(string):

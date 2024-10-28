@@ -7,6 +7,17 @@ import music
 #radio.config(group=23, channel=2, address=0x11111111)
 #default : channel=7 (0-83), address = 0x75626974, group = 0 (0-255)
 
+#1. Definition de l'image initiale pour le be:bi parent
+parent_image = Image("99990:"
+                "90090:"
+                "99990:"
+                "90000:"
+                "90000:")
+
+
+display.show(parent_image) # image initale = lettre "P"
+
+
 #Initialisation des variables du micro:bit
 radio.on()
 connexion_established = False
