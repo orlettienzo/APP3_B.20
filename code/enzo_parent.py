@@ -95,6 +95,9 @@ while communication:
     if m.isdigit():
         display.scroll("{} ml".format(m))
         sleep(1000)
+        button_b.was_pressed()  # Nous utilisons
+        # cette ligne pour ignorer les fois où l'utilisateur a précédemment
+        # appuyé sur le bouton B, permettant ainsi de commencer la définition de chaque nouvelle dose à 0.
         dose = set_milk_dose()
         if dose > 0:
             send_milk_dose(dose)
@@ -102,4 +105,5 @@ while communication:
     else:
         # Pequeno delay para não sobrecarregar o loop
         sleep(500)
+
 
