@@ -23,23 +23,21 @@ radio.send("sleeping")
 # Variable pour la quantité de lait consommée
 milk_consumed = 0
 
-# Envoie la quantité de lait consommée via radio
-radio.send("milk consumed: {} ml".format(milk_consumed))
-
 while True:
     # Vérifie le mouvement à l'aide de l'accéléromètre
     movement = accelerometer.current_gesture()
+    message = radio.receive()
+    m = ''
 
     if movement == "shake" or movement == "freefall" or movement == "move":
-        if sleeping:
             # Envoie le message "awake" si l'appareil dormait et qu'il y a eu un mouvement
             radio.send("awake")
             sleeping = False
 
-    # Vérifie si le bouton A est pressé pour afficher la quantité de lait
-    if button_a.is_pressed():
-        display.scroll("Milk: {} ml".format(milk_consumed))
+    if message:
+        m = message.strip()
 
-    # Pause pour réduire la fréquence de vérification
-    sleep(500)
+    if m == 'get_milk':
+        radio.send(str(milk_consumed))
+        display.scroll("{} ml".format(milk_consumed))
 
