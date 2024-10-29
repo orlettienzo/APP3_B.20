@@ -2,18 +2,20 @@ from microbit import *
 import radio
 import music
 
+
 # Can be used to filter the communication, only the ones with the same parameters will receive messages
 # radio.config(group=23, channel=2, address=0x11111111)
 # default : channel=7 (0-83), address = 0x75626974, group = 0 (0-255)
 
-# 1. Definition de l'image initiale pour le be:bi parent
-parent_image = Image("99990:"
-                     "90090:"
-                     "99990:"
-                     "90000:"
-                     "90000:")
+def show_image():
+    # 1. Definition de l'image initiale pour le be:bi parent
+    parent_image = Image("99990:"
+                         "90090:"
+                         "99990:"
+                         "90000:"
+                         "90000:")
 
-display.show(parent_image)  # image initale = lettre "P"
+    display.show(parent_image)  # image initale = lettre "P"
 
 
 def get_milk_consumed():
@@ -70,6 +72,8 @@ radio.config(channel=7)
 communication = True
 
 while communication:
+    show_image()
+
     # Recebe a mensagem se houver uma disponível
     mensagem = radio.receive()
     m = ''
@@ -92,9 +96,10 @@ while communication:
         display.scroll("{} ml".format(m))
         sleep(1000)
         dose = set_milk_dose()
-        send_milk_dose(dose)
+        if dose > 0:
+            send_milk_dose(dose)
 
     else:
         # Pequeno delay para não sobrecarregar o loop
-        sleep(100)
+        sleep(500)
 
