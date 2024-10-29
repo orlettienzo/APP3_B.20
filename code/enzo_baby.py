@@ -59,7 +59,7 @@ while True:
         display.show(Image.HAPPY)  # :)
         music.play(music.POWER_UP)
         radio.send("{}".format(milk_consumed))
-        display.scroll("{}".format(milk_consumed))
+        display.scroll("{} ml".format(milk_consumed))
 
     else:
         sleep(500)
