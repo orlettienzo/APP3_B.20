@@ -23,7 +23,7 @@
 <ul>
   <li><a href="https://github.com/orlettienzo">Enzo Andrade Orletti</a></li>
   <li><a href="https://github.com/VikPr555">Viktor Profirov</a></li>
-  <li>Jad M'Rabti</li>
+  <li><a href="https://github.com/jadmrabti">Jad M'Rabti</a></li>
   <li>Pedro Sibomana</li>
   
 </ul>
