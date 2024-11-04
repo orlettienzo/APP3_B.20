@@ -24,7 +24,7 @@
   <li><a href="https://github.com/orlettienzo">Enzo Andrade Orletti</a></li>
   <li><a href="https://github.com/VikPr555">Viktor Profirov</a></li>
   <li><a href="https://github.com/jadmrabti">Jad M'Rabti</a></li>
-  <li>Pedro Sibomana</li>
+  <li><a href="https://github.com/PedroSib23">Pedro Sibomana</a></li>
   
 </ul>
 <br>
