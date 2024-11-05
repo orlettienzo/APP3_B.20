@@ -1,3 +1,8 @@
+from microbit import *
+import radio
+import random
+import music
+
 def show_image():
     # 1. Définition de l'image initiale pour le micro:bit parent
     parent_image = Image("99990:"
