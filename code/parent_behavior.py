@@ -14,6 +14,11 @@ def show_image():
     display.show(parent_image)  # image initiale = lettre "P"
 
 
+def rassurer_enfant():
+    music.play(music.ODE)
+    radio.send("calm")
+
+
 def get_milk_consumed():
     radio.send("get_milk")
 
@@ -84,8 +89,7 @@ while communication:
         display.clear()  # Efface l'écran pour afficher à nouveau lors du prochain message
 
         # Ici, nous allons rassurer l'enfant
-        radio.send("calm")
-        music.play(music.ODE)
+        rassurer_enfant()
 
     if button_a.was_pressed():
         get_milk_consumed()
