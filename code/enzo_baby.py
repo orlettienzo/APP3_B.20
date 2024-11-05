@@ -3,6 +3,39 @@ import radio
 import music
 
 
+def get_password():
+    d = {
+        'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5, 'f': 6, 'g': 7, 'h': 8,
+        'i': 9, 'j': 10, 'k': 11, 'l': 12, 'm': 13, 'n': 14, 'o': 15,
+        'p': 16, 'q': 17, 'r': 18, 's': 19, 't': 20, 'u': 21, 'v': 22,
+        'w': 23, 'x': 24, 'y': 25, 'z': 26
+    }
+
+    password_chiffre = radio.receive()
+
+    if password_chiffre:
+        numbers = password_chiffre.split()
+        password = ''
+        for number in numbers:
+            for key, value in d.items():
+                if number == str(value):
+                    password += key
+
+        return str(password)
+
+    sleep(1000)
+
+
+password = None
+setting = True
+communication = False
+while setting:
+    password = get_password()
+    # radio.send(str(password))
+    if password != None:
+        setting = False
+
+
 def show_image():
     # 1. Définition de l'image initiale pour le bébé enfant
     baby_image = Image("99990:"
@@ -33,7 +66,9 @@ def drink_milk(milk_consumed, dose):
     milk_consumed += dose
 
 
-while True:
+communication = True
+while communication:
+    # display.scroll(password)
     show_image()
 
     # Vérifie le mouvement à l'aide de l'accéléromètre
@@ -74,4 +109,3 @@ while True:
 
     else:
         sleep(500)
-
