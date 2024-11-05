@@ -89,6 +89,10 @@ while communication:
         sleep(1000)  # Exibe o coração por 1 segundo
         display.clear()  # Limpa a tela para que possa exibir de novo na próxima mensagem
 
+        # Ici on va rassurer l'enfant
+        radio.send("calm")
+        music.play(music.ODE)
+
     if button_a.was_pressed():
         get_milk_consumed()
 
@@ -105,5 +109,4 @@ while communication:
     else:
         # Pequeno delay para não sobrecarregar o loop
         sleep(500)
-
 

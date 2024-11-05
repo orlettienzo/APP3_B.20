@@ -22,6 +22,7 @@ radio.config(channel=7)
 
 # Variable pour stocker l'état précédent
 sleeping = True
+calm = True
 radio.send("sleeping")
 
 # Variable pour la quantité de lait consommée
@@ -45,6 +46,16 @@ while True:
         radio.send("awake")
         sleep(1000)  # Max 1 message/ seconde
         sleeping = False
+        calm = False
+        while not calm:
+            display.show(Image.CONFUSED)
+            message = radio.receive()
+            if message:
+                if message == "calm":
+                    display.show(Image.HAPPY)
+                    music.play(music.POWER_UP)
+                    calm = True
+            sleep(1000)
 
     if message:
         m = message.strip()
