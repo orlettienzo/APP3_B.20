@@ -24,7 +24,7 @@ def get_milk_consumed():
 
 
 def set_milk_dose():
-    display.scroll("définir dose")
+    display.scroll("set dose")
     dose = 0
     add = True
 
