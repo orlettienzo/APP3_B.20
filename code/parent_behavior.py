@@ -38,6 +38,24 @@ def set_milk_dose():
         if button_b.was_pressed():
             dose += 50
 
+        #Supprimer une dose erro
+        elif button_a.was_pressed():
+            dose -= 50
+
+        #Reinitialiser a zero
+        elif button_a.is_pressed():
+            tempo_initial = running_time()  # Capture le temps initial
+
+            # Tant que le bouton B est pressé, continue de vérifier
+            while button_a.is_pressed():
+                temps_ecoule = running_time() - tempo_initial  # Temps pendant lequel le bouton a été pressé
+
+                # Si le temps écoulé est supérieur ou égal à 2000ms, arrête d'ajouter
+                if temps_ecoule >= time_to_stop:
+                    dose = 0
+                    break  # Sort de la boucle si le bouton est pressé plus de 2 secondes
+
+
         # Vérifie si le bouton B est pressé
         elif button_b.is_pressed():
             tempo_initial = running_time()  # Capture le temps initial
@@ -95,14 +113,17 @@ while communication:
         get_milk_consumed()
 
     if m.isdigit():
-        display.scroll("{} ml".format(m))
-        sleep(1000)
-        button_b.was_pressed()  # Nous utilisons
-        # cette ligne pour ignorer les pressions précédentes sur le bouton B,
-        # permettant de définir chaque nouvelle dose à 0.
-        dose = set_milk_dose()
-        if dose > 0:
-            send_milk_dose(dose)
+        dose_given = False
+        while not dose_given:
+            display.scroll("{} ml".format(m))
+            sleep(1000)
+            button_b.was_pressed()  # Nous utilisons
+            # cette ligne pour ignorer les pressions précédentes sur le bouton B,
+            # permettant de définir chaque nouvelle dose à 0.
+            dose = set_milk_dose()
+            if dose > 0:
+                send_milk_dose(dose)
+            dose_given = True
 
     else:
         # Petit délai pour éviter de surcharger la boucle
