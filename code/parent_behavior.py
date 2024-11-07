@@ -40,7 +40,10 @@ def set_milk_dose():
 
         #Supprimer une dose erro
         elif button_a.was_pressed():
-            dose -= 50
+            if dose >= 50:
+                dose -= 50
+            else:
+                pass #Il existe pas de dose negative´
 
         #Reinitialiser a zero
         elif button_a.is_pressed():
