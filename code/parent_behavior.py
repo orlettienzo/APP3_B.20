@@ -102,7 +102,7 @@ while communication:
         m = message.strip()
 
     # Vérifie si un nouveau message a été reçu
-    if m == "awake":
+    if m == "agitation elevee":
         # Réagit au message reçu (affiche un visage surpris)
         display.show(Image.SURPRISED)
         music.play(music.BA_DING)
