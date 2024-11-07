@@ -2,6 +2,7 @@ from microbit import *
 import radio
 import music
 import random
+from fonct_supp import devises
 
 # Peut être utilisé pour filtrer la communication, seuls ceux ayant les mêmes paramètres recevront les messages
 # radio.config(group=23, channel=2, address=0x11111111)
@@ -9,6 +10,9 @@ import random
 
 # Simulation de partage de mot de passe
 password = None
+
+taux_de_change = devises.ugly_devises
+#print(taux_de_change)
 def set_password():
     lettres = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
                'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
