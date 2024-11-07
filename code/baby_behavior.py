@@ -2,6 +2,8 @@ from microbit import *
 import radio
 import random
 import music
+
+
 def show_image():
     # 1. Définition de l'image initiale pour le bébé enfant
     baby_image = Image("99990:"
@@ -11,6 +13,24 @@ def show_image():
                        "99990:")
 
     display.show(baby_image)  # image initiale = lettre "E"
+
+
+def check_agitation():
+    # Capture les valeurs de l'accéléromètre sur les axes X, Y et Z
+    agitation = accelerometer.get_x() ** 2 + accelerometer.get_y() ** 2 + accelerometer.get_z() ** 2
+
+    # Définir les niveaux d'agitation (ajuster si nécessaire)
+    if agitation < 1000:
+        return "agitation faible"
+    elif agitation < 15000:
+        return "agitation moyenne"
+    else:
+        return "agitation elevee"
+
+
+def send_agitation():
+    message = check_agitation()
+    radio.send(message)
 
 
 # Active le module radio
@@ -42,9 +62,11 @@ while communication:
     message = radio.receive()
     m = ''
 
-    if movement == "shake" or movement == "freefall" or movement == "move":
+    etat_enfant = check_agitation()
+
+    if etat_enfant == "agitation elevee":
         # Envoie le message "awake" si l'appareil dormait et qu'il y a eu un mouvement
-        radio.send("awake")
+        send_agitation()
         sleep(1000)  # Max 1 message/ seconde
         sleeping = False
         calm = False
