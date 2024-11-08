@@ -3,6 +3,45 @@ import radio
 import random
 import music
 
+# Active le module radio
+radio.on()
+radio.config(channel=7)
+
+class DigitalWallet:
+    def __init__(self, titulaire, numero_compte):
+        self.titulaire = titulaire
+        self.numero_compte = numero_compte
+        self.solde = 0.0
+
+    def receive(self, valeur):
+        self.solde += valeur
+
+
+# Cette fonction sera utiliser plus tard
+# def calculer_appreciation(valeur_ancienne, valeur_nouvelle):
+# if valeur_ancienne == 0:
+# raise ValueError("La valeur ancienne ne peut pas être zéro pour calculer l'appréciation en pourcentage.")
+
+# appreciation = ((valeur_nouvelle - valeur_ancienne) / valeur_ancienne) * 100
+# return appreciation
+
+baby_wallet = DigitalWallet('Micro Enfant', 'BE00 0001')
+
+
+getting_btc = False
+while not getting_btc:
+    message = radio.receive()
+    if message:
+        amount = float(message)
+
+        baby_wallet.receive(amount)
+
+        display.scroll('{} BTC'.format(baby_wallet.solde))
+
+        getting_btc = True
+
+    else:
+        sleep(1000)
 
 def show_image():
     # 1. Définition de l'image initiale pour le bébé enfant

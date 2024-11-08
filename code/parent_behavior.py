@@ -3,6 +3,46 @@ import radio
 import random
 import music
 
+# Active le module radio
+radio.on()
+radio.config(channel= 7)
+
+#Dictionnaire des taux de change des devises - 08/11
+#Dictionnaire généré par l'API:
+# "Currencyapi"
+
+devises = {
+  "meta": {
+    "last_updated_at": "2024-11-07T23:59:59Z"
+  },
+  "data": {
+    "CAD": {
+      "code": "CAD",
+      "value": 105168.1281341745
+    },
+    "EUR": {
+      "code": "EUR",
+      "value": 70239.7648075961
+    },
+    "USD": {
+      "code": "USD",
+      "value": 75847.1329232132
+    }
+  }
+}
+
+#devises_new_values = {À REMPLIR} *À consulter nouvellement l'API en decembre pour pouvoir calculer l'appreciation du BTC
+
+allocation_familiale = 1000
+
+def send_money(devises, amount):
+    current_btc = devises["data"]["EUR"]["value"]
+    btc = amount / current_btc
+    radio.send(str(btc))
+
+send_money(devises, allocation_familiale)
+
+
 def show_image():
     # 1. Définition de l'image initiale pour le micro:bit parent
     parent_image = Image("99990:"
