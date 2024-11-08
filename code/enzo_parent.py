@@ -2,7 +2,40 @@ from microbit import *
 import radio
 import music
 import random
-from fonct_supp import devises
+
+
+#Dictionnaire des taux de change des devises - 08/11
+devises = {
+  "meta": {
+    "last_updated_at": "2024-11-07T23:59:59Z"
+  },
+  "data": {
+    "CAD": {
+      "code": "CAD",
+      "value": 105168.1281341745
+    },
+    "EUR": {
+      "code": "EUR",
+      "value": 70239.7648075961
+    },
+    "USD": {
+      "code": "USD",
+      "value": 75847.1329232132
+    }
+  }
+}
+
+allocation_familiale = 1000
+
+def send_money(devises, amount):
+    current_btc = devises["data"]["EUR"]["value"]
+    btc = amount / current_btc
+    radio.send(str(btc))
+
+send_money(devises, allocation_familiale)
+
+
+
 
 # Peut être utilisé pour filtrer la communication, seuls ceux ayant les mêmes paramètres recevront les messages
 # radio.config(group=23, channel=2, address=0x11111111)
@@ -11,7 +44,7 @@ from fonct_supp import devises
 # Simulation de partage de mot de passe
 password = None
 
-taux_de_change = devises.ugly_devises
+
 #print(taux_de_change)
 def set_password():
     lettres = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',

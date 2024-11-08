@@ -2,6 +2,36 @@ from microbit import *
 import radio
 import music
 
+radio.config(channel=7)
+
+class DigitalWallet:
+    def __init__(self, titulaire, numero_compte):
+        self.titulaire = titulaire
+        self.numero_compte = numero_compte
+        self.solde = 0.0
+
+    def receive(self, valeur):
+        self.solde += valeur
+
+baby_wallet = DigitalWallet('Micro Enfant', 'BE00 0001')
+
+radio.on()
+
+getting_btc = False
+while not getting_btc:
+    message = radio.receive()
+    if message:
+        amount = float(message)
+
+        baby_wallet.receive(amount)
+
+        display.scroll('{} BTC'.format(baby_wallet.solde))
+
+        getting_btc = True
+
+    else:
+        sleep(1000)
+
 
 def get_password():
     d = {
@@ -109,3 +139,4 @@ while communication:
 
     else:
         sleep(500)
+
