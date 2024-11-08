@@ -25,6 +25,8 @@ devises = {
   }
 }
 
+#devises_new_values = {À REMPLIR} *À consulter nouvellement l'API en decembre pour pouvoir calculer l'appreciation du BTC
+
 allocation_familiale = 1000
 
 def send_money(devises, amount):

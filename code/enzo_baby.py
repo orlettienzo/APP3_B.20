@@ -13,6 +13,15 @@ class DigitalWallet:
     def receive(self, valeur):
         self.solde += valeur
 
+
+# Cette fonction sera utiliser plus tard
+# def calculer_appreciation(valeur_ancienne, valeur_nouvelle):
+# if valeur_ancienne == 0:
+# raise ValueError("La valeur ancienne ne peut pas être zéro pour calculer l'appréciation en pourcentage.")
+
+# appreciation = ((valeur_nouvelle - valeur_ancienne) / valeur_ancienne) * 100
+# return appreciation
+
 baby_wallet = DigitalWallet('Micro Enfant', 'BE00 0001')
 
 radio.on()
