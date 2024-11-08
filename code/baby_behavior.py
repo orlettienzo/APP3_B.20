@@ -27,7 +27,6 @@ class DigitalWallet:
 
 baby_wallet = DigitalWallet('Micro Enfant', 'BE00 0001')
 
-
 getting_btc = False
 while not getting_btc:
     message = radio.receive()
@@ -43,6 +42,7 @@ while not getting_btc:
     else:
         sleep(1000)
 
+
 def show_image():
     # 1. Définition de l'image initiale pour le bébé enfant
     baby_image = Image("99990:"
@@ -56,20 +56,21 @@ def show_image():
 
 def check_agitation():
     # Capture les valeurs de l'accéléromètre sur les axes X, Y et Z
-    agitation = accelerometer.get_x() ** 2 + accelerometer.get_y() ** 2 + accelerometer.get_z() ** 2
+    agitation = accelerometer.get_strength()
+    limite = 3000
 
     # Définir les niveaux d'agitation (ajuster si nécessaire)
     if agitation < 1000:
         return "agitation faible"
-    elif agitation < 15000:
+    elif agitation < 2999:
         return "agitation moyenne"
-    else:
+    elif agitation >= limite:
         return "agitation elevee"
 
 
 def send_agitation():
     message = check_agitation()
-    radio.send(message)
+    radio.send(str(message))
 
 
 # Active le module radio
