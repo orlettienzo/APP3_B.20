@@ -5,40 +5,42 @@ import music
 
 # Active le module radio
 radio.on()
-radio.config(channel= 7)
+radio.config(channel=7)
 
-#Dictionnaire des taux de change des devises - 08/11
-#Dictionnaire généré par l'API:
+# Dictionnaire des taux de change des devises - 08/11
+# Dictionnaire généré par l'API:
 # "Currencyapi"
 
 devises = {
-  "meta": {
-    "last_updated_at": "2024-11-07T23:59:59Z"
-  },
-  "data": {
-    "CAD": {
-      "code": "CAD",
-      "value": 105168.1281341745
+    "meta": {
+        "last_updated_at": "2024-11-07T23:59:59Z"
     },
-    "EUR": {
-      "code": "EUR",
-      "value": 70239.7648075961
-    },
-    "USD": {
-      "code": "USD",
-      "value": 75847.1329232132
+    "data": {
+        "CAD": {
+            "code": "CAD",
+            "value": 105168.1281341745
+        },
+        "EUR": {
+            "code": "EUR",
+            "value": 70239.7648075961
+        },
+        "USD": {
+            "code": "USD",
+            "value": 75847.1329232132
+        }
     }
-  }
 }
 
-#devises_new_values = {À REMPLIR} *À consulter nouvellement l'API en decembre pour pouvoir calculer l'appreciation du BTC
+# devises_new_values = {À REMPLIR} *À consulter nouvellement l'API en decembre pour pouvoir calculer l'appreciation du BTC
 
 allocation_familiale = 1000
+
 
 def send_money(devises, amount):
     current_btc = devises["data"]["EUR"]["value"]
     btc = amount / current_btc
     radio.send(str(btc))
+
 
 send_money(devises, allocation_familiale)
 
@@ -63,6 +65,25 @@ def get_milk_consumed():
     radio.send("get_milk")
 
 
+def get_temperature():
+    radio.send("get_temperature")
+
+
+def check_fever(temp):
+    if temp < 35:
+        return "hypothermie"
+    elif 37 < temp < 38:
+        return "fievre_legere"
+    elif 38 < temp < 39:
+        return "fievre_moderee"
+    elif 39 < temp < 40:
+        return "fievre_elevee"
+    elif temp > 40:
+        return "fievre_tres_elevee"
+    else:
+        return "temperature_normale"
+
+
 def set_milk_dose():
     display.scroll("set dose")
     dose = 0
@@ -78,14 +99,14 @@ def set_milk_dose():
         if button_b.was_pressed():
             dose += 50
 
-        #Supprimer une dose erro
+        # Supprimer une dose erro
         elif button_a.was_pressed():
             if dose >= 50:
                 dose -= 50
             else:
-                pass #Il existe pas de dose negative´
+                pass  # Il existe pas de dose negative´
 
-        #Reinitialiser a zero
+        # Reinitialiser a zero
         elif button_a.is_pressed():
             tempo_initial = running_time()  # Capture le temps initial
 
@@ -140,6 +161,7 @@ while communication:
 
     if message:
         m = message.strip()
+        m = str(m)
 
     # Vérifie si un nouveau message a été reçu
     if m == "agitation elevee":
@@ -154,6 +176,28 @@ while communication:
 
     if button_a.was_pressed():
         get_milk_consumed()
+
+    if button_b.was_pressed():
+        get_temperature()
+        found = False
+        while not found:
+            message = radio.receive()
+            if message:
+                m = message.strip()
+                parts = m.split()
+                temp = parts[0]
+                celsius = parts[1]
+                if temp.isdigit() and celsius == 'C':
+                    display.scroll('{} C'.format(temp))
+                    sleep(500)
+                    baby_temp = check_fever(int(temp))
+                    display.scroll("{}".format(baby_temp))
+                    if baby_temp != "temperature_normale":
+                        display.show(Image.SURPRISED)
+                        sleep(1500)
+                        found = True
+                else:
+                    sleep(1000)
 
     if m.isdigit():
         dose_given = False

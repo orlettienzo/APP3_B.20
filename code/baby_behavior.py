@@ -127,6 +127,10 @@ while communication:
         radio.send(str(milk_consumed))
         display.scroll("{} ml".format(milk_consumed))
 
+    if m == 'get_temperature':
+        temp = temperature()
+        radio.send(str(temp) + " C")
+
     elif m.isdigit():
         dose = int(m)
         milk_consumed += dose  # L'enfant est en train de boire la dose de lait
