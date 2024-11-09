@@ -130,6 +130,19 @@ while communication:
     if m == 'get_temperature':
         temp = temperature()
         radio.send(str(temp) + " C")
+        if temp < 35 or temp > 37:
+            happy = False
+            while not happy:
+                display.show(Image.SAD)
+                message = radio.receive()
+                if message == 'medicament':
+                    display.show(Image.HAPPY)
+                    music.play(music.POWER_UP)
+                    radio.send('merci')
+                    happy = True
+                else:
+                    sleep(1000)
+
 
     elif m.isdigit():
         dose = int(m)

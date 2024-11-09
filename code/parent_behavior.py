@@ -84,6 +84,10 @@ def check_fever(temp):
         return "temperature_normale"
 
 
+def send_medicament():
+    radio.send('medicament')
+
+
 def set_milk_dose():
     display.scroll("set dose")
     dose = 0
@@ -194,7 +198,18 @@ while communication:
                     display.scroll("{}".format(baby_temp))
                     if baby_temp != "temperature_normale":
                         display.show(Image.SURPRISED)
-                        sleep(1500)
+                        sleep(1000)
+                        send_medicament()
+                        answer = False
+                        while not answer:
+                            display.show(Image.SURPRISED)
+                            message = radio.receive()
+                            if message == 'merci':
+                                display.show(Image.HAPPY)
+                                sleep(1000)
+                                answer = True
+                            else:
+                                sleep(200)
                         found = True
                 else:
                     sleep(1000)
