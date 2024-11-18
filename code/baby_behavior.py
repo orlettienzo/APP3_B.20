@@ -7,6 +7,7 @@ import music
 radio.on()
 radio.config(channel=7)
 
+
 # creer portefeuille de l'enfant
 class DigitalWallet:
     def __init__(self, titulaire, numero_compte):
@@ -89,6 +90,10 @@ radio.send("sleeping")
 milk_consumed = 0
 
 
+def show_milk(milk_consumed):
+    display.scroll(str(milk_consumed) + "ml")
+
+
 def drink_milk(milk_consumed, dose):
     milk_consumed += dose
 
@@ -97,7 +102,8 @@ communication = True
 while communication:
     # display.scroll(password)
     show_image()
-
+    if button_a.was_pressed():
+        show_milk(milk_consumed)
     # Vérifie le mouvement à l'aide de l'accéléromètre
     movement = accelerometer.current_gesture()
     message = radio.receive()
@@ -105,7 +111,7 @@ while communication:
 
     etat_enfant = check_agitation()
 
-    #Verification si l'enfant tombe
+    # Verification si l'enfant tombe
     if movement == "freefall":
         radio.send("agitation elevee")
         sleep(1000)  # Max 1 message/ seconde
