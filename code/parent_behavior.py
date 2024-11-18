@@ -39,10 +39,16 @@ allocation_familiale = 1000
 def send_money(devises, amount):
     current_btc = devises["data"]["EUR"]["value"]
     btc = amount / current_btc
-    radio.send(str(btc))
+    radio.send("btc")
+    answer = False
+    while not answer:
+        message = radio.receive()
+        if message:
+            if message == "send":
+                radio.send(str(btc))
 
 
-send_money(devises, allocation_familiale)
+
 
 
 def show_image():
@@ -158,6 +164,9 @@ communication = True
 
 while communication:
     show_image()
+
+    if pin_logo.is_touched():
+        send_money(devises, allocation_familiale)
 
     # Reçoit un message s'il y en a un de disponible
     message = radio.receive()

@@ -18,6 +18,7 @@ class DigitalWallet:
         self.solde += valeur
 
 
+
 # Initialisation du portefeuille
 baby_wallet = DigitalWallet('Micro Enfant', 'BE00 0001')
 
@@ -122,6 +123,7 @@ while communication:
             radio.send(str(milk_consumed))
             display.scroll('{} ml'.format(milk_consumed))
 
+
         # Gérer la demande de température
         elif message == "get_temperature":
             temp = temperature()
@@ -146,6 +148,18 @@ while communication:
             music.play(music.POWER_UP)
             radio.send(str(milk_consumed))
             display.scroll('{} ml'.format(milk_consumed))
+
+        elif message == 'btc':
+            radio.send('send')
+            answer = False
+            while not answer:
+                message = radio.receive()
+                if message:
+                    baby_wallet.receive(float(message))
+                    display.scroll('{} BTC'.format(baby_wallet.solde))
+                    answer = True
+                else:
+                    sleep(1000)
 
         else:
             sleep(500)
