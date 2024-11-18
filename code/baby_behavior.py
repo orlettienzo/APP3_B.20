@@ -18,12 +18,13 @@ class DigitalWallet:
         self.solde += valeur
 
 
-
 # Initialisation du portefeuille
 baby_wallet = DigitalWallet('Micro Enfant', 'BE00 0001')
 
+
 def rassurer_parent():
     radio.send("calm")
+
 
 # Fonction pour afficher une image d'enfant
 def show_image():
@@ -92,7 +93,7 @@ while communication:
             message = radio.receive()
             if message == "calm":
                 display.show(Image.HAPPY)
-                music.play(music.POWER_UP)
+                # music.play(music.POWER_UP)
                 calm = True
             sleep(100)
 
@@ -111,6 +112,7 @@ while communication:
             sleep(1000)
             rassurer_parent()
             display.show(Image.HAPPY)
+            sleep(1000)
             calm = True
 
     # Réception des messages via radio
@@ -127,7 +129,7 @@ while communication:
         # Gérer la demande de température
         elif message == "get_temperature":
             temp = temperature()
-            radio.send(str(temp) + "C")
+            radio.send(str(temp) + " C")
             if temp < 35 or temp > 37:
                 happy = False
                 while not happy:

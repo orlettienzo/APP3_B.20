@@ -48,9 +48,6 @@ def send_money(devises, amount):
                 radio.send(str(btc))
 
 
-
-
-
 def show_image():
     # 1. Définition de l'image initiale pour le micro:bit parent
     parent_image = Image("99990:"
@@ -63,7 +60,7 @@ def show_image():
 
 
 def rassurer_enfant():
-    music.play(music.ODE)
+    # music.play(music.ODE)
     radio.send("calm")
 
 
@@ -160,13 +157,10 @@ radio.on()
 radio.config(channel=7)
 
 # Boucle pour la communication entre les micro:bits
-communication = True
 
+communication = True
 while communication:
     show_image()
-
-    if pin_logo.is_touched():
-        send_money(devises, allocation_familiale)
 
     # Reçoit un message s'il y en a un de disponible
     message = radio.receive()
@@ -186,6 +180,7 @@ while communication:
                 if message == "calm":
                     display.show(Image.HAPPY)
                     music.play(music.BA_DING)
+                    calm = True
             else:
                 sleep(1000)
 
@@ -199,7 +194,7 @@ while communication:
             message = radio.receive()
             if message:
                 m = message.strip()
-                parts = m.split()
+                parts = m.split(" ")
                 temp = parts[0]
                 celsius = parts[1]
                 if temp.isdigit() and celsius == 'C':
@@ -217,6 +212,7 @@ while communication:
                             message = radio.receive()
                             if message == 'merci':
                                 display.show(Image.HAPPY)
+                                music.play(music.POWER_UP)
                                 sleep(1000)
                                 answer = True
                             else:
