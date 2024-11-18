@@ -7,6 +7,7 @@ import music
 radio.on()
 radio.config(channel=7)
 
+
 class DigitalWallet:
     def __init__(self, titulaire, numero_compte):
         self.titulaire = titulaire
@@ -103,6 +104,22 @@ while communication:
     m = ''
 
     etat_enfant = check_agitation()
+
+    #Verification si l'enfant tombe
+    if movement == "freefall":
+        radio.send("agitation elevee")
+        sleep(1000)  # Max 1 message/ seconde
+        sleeping = False
+        calm = False
+        while not calm:
+            display.show(Image.CONFUSED)
+            message = radio.receive()
+            if message:
+                if message == "calm":
+                    display.show(Image.HAPPY)
+                    music.play(music.POWER_UP)
+                    calm = True
+            sleep(1000)
 
     if etat_enfant == "agitation elevee":
         # Envoie le message "awake" si l'appareil dormait et qu'il y a eu un mouvement
