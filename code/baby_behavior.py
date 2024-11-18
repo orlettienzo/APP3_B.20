@@ -59,7 +59,7 @@ def show_milk(milk_consumed):
 # Gestion de la consommation de lait
 def drink_milk(milk_consumed, dose):
     milk_consumed += dose
-    display.scroll(str(milk_consumed) + "ml")
+    #display.scroll(str(milk_consumed) + "ml")
     return milk_consumed
 
 
@@ -68,8 +68,9 @@ sleeping = True
 calm = True
 milk_consumed = 0
 
+communication = True
 # Boucle principale
-while True:
+while communication:
     # Affiche une image de l'enfant
     show_image()
 
@@ -118,8 +119,8 @@ while True:
 
         # Gérer la demande de lait consommé
         if message == "get_milk":
-            radio.send(str(milk_consumed) + "ml")
-            display.scroll(str(milk_consumed) + "ml")
+            radio.send(str(milk_consumed))
+            display.scroll('{} ml'.format(milk_consumed))
 
         # Gérer la demande de température
         elif message == "get_temperature":
@@ -143,7 +144,8 @@ while True:
             milk_consumed = drink_milk(milk_consumed, dose)
             display.show(Image.HAPPY)
             music.play(music.POWER_UP)
-            radio.send(str(milk_consumed) + "ml")
+            radio.send(str(milk_consumed))
+            display.scroll('{} ml'.format(milk_consumed))
 
         else:
             sleep(500)
