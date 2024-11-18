@@ -7,7 +7,7 @@ import music
 radio.on()
 radio.config(channel=7)
 
-
+# creer portefeuille de l'enfant
 class DigitalWallet:
     def __init__(self, titulaire, numero_compte):
         self.titulaire = titulaire
