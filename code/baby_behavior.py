@@ -77,7 +77,7 @@ while communication:
 
     # Si le bouton A est pressé, affiche la quantité de lait consommée
     if button_a.was_pressed():
-        show_milk(milk_consumed)
+        show_milk(str(milk_consumed) + " ml")
 
     # Vérifie les mouvements avec l'accéléromètre
     movement = accelerometer.current_gesture()
