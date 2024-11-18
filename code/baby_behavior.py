@@ -54,13 +54,13 @@ def send_agitation():
 
 # Fonction pour afficher la quantité de lait consommée
 def show_milk(milk_consumed):
-    display.scroll(str((milk_consumed) + "ml"))
+    display.scroll(str((milk_consumed) + " ml"))
 
 
 # Gestion de la consommation de lait
 def drink_milk(milk_consumed, dose):
     milk_consumed += dose
-    #display.scroll(str(milk_consumed) + "ml")
+    # display.scroll(str(milk_consumed) + "ml")
     return milk_consumed
 
 
@@ -77,7 +77,7 @@ while communication:
 
     # Si le bouton A est pressé, affiche la quantité de lait consommée
     if button_a.was_pressed():
-        show_milk(str(milk_consumed) + " ml")
+        show_milk(str(milk_consumed))
 
     # Vérifie les mouvements avec l'accéléromètre
     movement = accelerometer.current_gesture()
