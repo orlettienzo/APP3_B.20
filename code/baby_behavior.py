@@ -85,18 +85,23 @@ while communication:
 
     # Vérifie si l'enfant est en chute libre
     if movement == "freefall":
-        radio.send("agitation elevee")
+        radio.send("freefall")
         sleeping = False
         calm = False
+        display.show(Image.SAD)
         while not calm:
-            display.show(Image.CONFUSED)
+            radio.send("ping")
             message = radio.receive()
-            if message == "calm":
-                display.show(Image.HAPPY)
-                # music.play(music.POWER_UP)
-                calm = True
-            sleep(100)
-
+            if message:
+                if message == "calm":
+                    display.show(Image.HAPPY)
+                    music.play(music.POWER_UP)
+                    calm = True
+                else:
+                    sleep(1000)
+            else:
+                sleep(500)
+        sleep(3500)
     # Vérifie le niveau d'agitation
     etat_enfant = check_agitation()
     if etat_enfant == "agitation elevee":

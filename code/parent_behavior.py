@@ -170,6 +170,23 @@ while communication:
         m = message.strip()
         m = str(m)
 
+    if message == "freefall":
+        calm = False
+        display.show(Image.SURPRISED)
+        sleep(1000)
+        while not calm:
+            incoming = radio.receive_full()  # Recebe a mensagem completa (incluindo o RSSI)
+            if incoming:
+                _, rssi, _ = incoming  # Extrai apenas o RSSI
+                if rssi > -50:
+                    radio.send("calm")
+                    display.show(Image.HAPPY)  # Muito próximos
+                    music.play(music.POWER_UP)
+                    calm = True
+                else:
+                    display.show(Image.SAD)  # Distantes
+            sleep(100)
+
     # Vérifie si un nouveau message a été reçu
     if m == "agitation elevee":
         calm = False
