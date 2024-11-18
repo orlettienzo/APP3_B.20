@@ -43,6 +43,7 @@
 <a href="https://python.microbit.org/v/3" target="_blank"><img src="./images/microbit_logo.png" alt="Logo du Micro:bit" width="150"></a>
 <br>
 
+<br>
 <h2 align="left">🛠️ Installation de Python et Git</h2>
 <p>Pour commencer à utiliser Python et Git sur votre machine, suivez les étapes ci-dessous:</p>
 
@@ -63,7 +64,7 @@
 </ol>
 <br>
 
-
+<br>
 <h2 align="left">📂 Cloner le projet avec Git</h2>
 <p>Pour récupérer le code source de notre projet sur votre machine, suivez ces étapes simples :</p>
 
