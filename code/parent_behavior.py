@@ -169,14 +169,16 @@ while communication:
 
     # Vérifie si un nouveau message a été reçu
     if m == "agitation elevee":
-        # Réagit au message reçu (affiche un visage surpris)
+        calm = False
         display.show(Image.SURPRISED)
-        music.play(music.BA_DING)
-        sleep(1000)  # Affiche le visage surpris pendant 1 seconde
-        display.clear()  # Efface l'écran pour afficher à nouveau lors du prochain message
-
-        # Ici, nous allons rassurer l'enfant
-        rassurer_enfant()
+        while not calm:
+            message = radio.receive()
+            if message:
+                if message == "calm":
+                    display.show(Image.HAPPY)
+                    music.play(music.BA_DING)
+            else:
+                sleep(1000)
 
     if button_a.was_pressed():
         get_milk_consumed()

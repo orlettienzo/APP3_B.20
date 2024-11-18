@@ -21,6 +21,8 @@ class DigitalWallet:
 # Initialisation du portefeuille
 baby_wallet = DigitalWallet('Micro Enfant', 'BE00 0001')
 
+def rassurer_parent():
+    radio.send("calm")
 
 # Fonction pour afficher une image d'enfant
 def show_image():
@@ -95,17 +97,19 @@ while True:
     # Vérifie le niveau d'agitation
     etat_enfant = check_agitation()
     if etat_enfant == "agitation elevee":
+        # Envoie le message "awake" si l'appareil dormait et qu'il y a eu un mouvement
         send_agitation()
+        sleep(1000)  # Max 1 message/ seconde
         sleeping = False
         calm = False
         while not calm:
             display.show(Image.CONFUSED)
-            message = radio.receive()
-            if message == "calm":
-                display.show(Image.HAPPY)
-                music.play(music.POWER_UP)
-                calm = True
-            sleep(100)
+            sleep(1000)
+            music.play(music.ODE)
+            sleep(1000)
+            rassurer_parent()
+            display.show(Image.HAPPY)
+            calm = True
 
     # Réception des messages via radio
     message = radio.receive()
