@@ -175,16 +175,16 @@ while communication:
         display.show(Image.SURPRISED)
         sleep(1000)
         while not calm:
-            incoming = radio.receive_full()  # Recebe a mensagem completa (incluindo o RSSI)
+            incoming = radio.receive_full()
             if incoming:
-                _, rssi, _ = incoming  # Extrai apenas o RSSI
-                if rssi > -50:
+                _, rssi, _ = incoming  # On cherche seulement le RSSI
+                if rssi > -30:
                     radio.send("calm")
-                    display.show(Image.HAPPY)  # Muito próximos
+                    display.show(Image.HAPPY)  # Très proches
                     music.play(music.POWER_UP)
                     calm = True
                 else:
-                    display.show(Image.SAD)  # Distantes
+                    display.show(Image.SAD)  # Distants
             sleep(100)
 
     # Vérifie si un nouveau message a été reçu
