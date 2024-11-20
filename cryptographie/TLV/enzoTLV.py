@@ -1,5 +1,4 @@
-import baby_functions as b
-
+from cryptographie.TLV import baby_functions as b
 
 #Exemple de transformation de message en TLV
 
