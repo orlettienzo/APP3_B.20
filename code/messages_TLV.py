@@ -20,7 +20,6 @@ def send_tlv_to_file(tag, value, file_name):
 
     tag : Identifiant du tag.
     value : Données à envoyer.
-    file_name : Le nom du fichier où envoyer le message.
     """
     tlv_message = encode_tlv(tag, value)
     with open(file_name, 'wb') as file:
