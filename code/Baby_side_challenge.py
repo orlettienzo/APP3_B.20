@@ -1,8 +1,8 @@
-from microbit import *
-import radio
-import random
-import music
-from baby_behavior import *
+#from microbit import *
+#import radio
+#import random
+#import music
+#from baby_behavior import *
 
 #Can be used to filter the communication, only the ones with the same parameters will receive messages
 #radio.config(group=23, channel=2, address=0x11111111)
@@ -43,7 +43,27 @@ def hashing(string):
 			x = -2
 		return str(x)
 	return ""
-    
+
+"""
+--------------------
+Ajout fonction TLV()
+--------------------
+"""
+def tlv(type, message):
+    lenght = len(message)
+    message = message.strip().lower()
+    message = hashing(message)
+    #print(f"{type}|{lenght}|{message}")
+    return f"{type}|{lenght}|{message}"
+
+#Exemple d'utilisation
+message = "Hello"
+print(tlv(1, message))
+
+"""
+--------------------
+--------------------
+"""
 def vigenere(message, key, decryption=False):
     text = ""
     key_length = len(key)
