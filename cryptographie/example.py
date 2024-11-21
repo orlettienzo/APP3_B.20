@@ -128,3 +128,10 @@ print("Message chiffré:", encrypted_message)
 final_message = decode_final(encrypted_message, "KEYWORD", tlv_message)
 print("Message final décodé:", final_message)
 
+
+#Output:
+    #Message TLV: 1|5|hello
+    #Hachage TLV: 663713901
+    #Message chiffré: 152405750
+    #Hachage déchiffré: 663713901
+    #Message final décodé: 1|5|hello
