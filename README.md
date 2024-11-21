@@ -6,7 +6,9 @@
 <br>
 
 <h2 align="left">📜 Description de notre projet</h2>
-<p>Projet sur le <strong>micro:bit</strong></p>
+<p>Il s'agit d'un projet visant à tester la pluralité des possibilités d'interactions entre deux micro:bits et à garantir l'envoi de messages cryptés entre eux via radio.</p>
+<p>Dans notre cas, nous simulons qu'un micro:bit représente le Parent et l'autre l'Enfant. L'objectif final est d'aider le parent à mieux prendre soin et surveiller son enfant.</p>
+<p>Des situations quotidiennes sont ainsi représentées, par exemple lorsque l'enfant est très agité ou même lorsqu'il tombe du lit. En conséquence, le Parent réagira en fonction de la situation qui lui est présentée.</p>
 <br>
 
 <h2 align="left">👥 Groupe B.20</h2>
