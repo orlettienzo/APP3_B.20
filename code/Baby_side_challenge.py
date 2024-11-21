@@ -52,9 +52,8 @@ Ajout fonction TLV()
 def tlv(type, message):
     lenght = len(message)
     message = message.strip().lower()
-    message = hashing(message)
-    #print(f"{type}|{lenght}|{message}")
-    return f"{type}|{lenght}|{message}"
+    tlv = "{}|{}|{}".format(type, lenght, message)
+    return tlv
 
 #Exemple d'utilisation
 message = "Hello"

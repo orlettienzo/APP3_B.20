@@ -1,8 +1,8 @@
-from microbit import *
-import radio
-import random
-import music
-from parent_behavior import *
+#from microbit import *
+#import radio
+#import random
+#import music
+#from parent_behavior import *
 
 #Can be used to filter the communication, only the ones with the same parameters will receive messages
 #radio.config(group=23, channel=2, address=0x11111111)
@@ -62,13 +62,9 @@ Ajout fonction TLV()
 def tlv(type, message):
     lenght = len(message)
     message = message.strip().lower()
-    message = hashing(message)
-    #print(f"{type}|{lenght}|{message}")
-    return f"{type}|{lenght}|{message}"
+    tlv = "{}|{}|{}".format(type, lenght, message)
+    return tlv
 
-#Exemple d'utilisation
-message = "Hello"
-print(tlv(1, message))
 
 """
 --------------------
@@ -161,3 +157,4 @@ def respond_to_connexion_request(key):
     """
 
 def main():
+    return True
