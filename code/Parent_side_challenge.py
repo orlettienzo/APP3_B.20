@@ -162,3 +162,20 @@ def main():
 
 
 password = "HEISENBERG"
+verification = "ok"
+hash_ver = hashing(verification)
+connexion = False
+while not connexion:
+    m = radio.receive()
+    if m:
+        parts = m.split("|")
+        des_vig = vigenere(parts[2], key, decryption=True)
+        radio.send(hashing(des_vig))
+        answer = False
+        while not answer:
+            m = radio.receive()
+            if m:
+                if m == hash_ver:
+                    display.show(Image.HAPPY)
+                    answer = True
+        connexion = True

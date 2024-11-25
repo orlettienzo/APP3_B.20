@@ -155,3 +155,21 @@ def main():
 
 
 password = "HEISENBERG"
+connexion = False
+nonce = random.randint(100,1000)
+hash_password = hashing(password)
+while not connexion:
+    vig_pass = vigenere(password, "KEYWORD", decryption=False)
+    radio.send(tlv(nonce, vig_pass))
+    answer = False
+    while not answer:
+        m = radio.receive()
+        if m:
+            if m == hash_password:
+                message = "ok"
+                hash_msg = hashing(message)
+                radio.send(hash_msg)
+                display.show(Image.HAPPY)
+                sleep(1000)
+                answer = True
+    connexion = True
