@@ -248,5 +248,118 @@ while not connexion:
 # Test
 # radio.send(final_key)
 
-#Variable(s) globale(s)
+def show_image():
+    # 1. Définition de l'image initiale pour le micro:bit parent
+    parent_image = Image("99990:"
+                         "90090:"
+                         "99990:"
+                         "90000:"
+                         "90000:")
+
+    display.show(parent_image)  # image initiale = lettre "P"
+
+
+def rassurer_enfant(type=1):
+    message = "calm"
+    vig_m = vigenere(message, final_key, decryption=False)
+    radio.send(tlv(type, vig_m))  # CHIFFREE
+
+
+def get_milk_consumed(type=3):
+    message = "get_milk"
+    vig_m = vigenere(message, final_key, decryption=False)
+    radio.send(tlv(type, vig_m))  # CHIFFREE
+
+
+def get_temperature(type=4):
+    message = "get_temperature"
+    vig_m = vigenere(message, final_key, decryption=False)
+    radio.send(tlv(type, vig_m))  # CHIFFREE
+
+
+def check_fever(temp):
+    if temp < 35:
+        return "hypothermie"
+    elif 37 < temp < 38:
+        return "fievre_legere"
+    elif 38 < temp < 39:
+        return "fievre_moderee"
+    elif 39 < temp < 40:
+        return "fievre_elevee"
+    elif temp > 40:
+        return "fievre_tres_elevee"
+    else:
+        return "temperature_normale"
+
+
+def send_medicament(type=4):
+    message = "medicament"
+    vig_m = vigenere(message, final_key, decryption=False)
+    radio.send(tlv(type, vig_m))  # CHIFFREE
+
+
+def set_milk_dose():
+    display.scroll("def dose")
+    dose = 0
+    add = True
+
+    time_to_stop = 2000
+
+    while add:
+
+        if dose < 10:
+            display.show("{}".format(dose))
+
+        if button_b.was_pressed():
+            dose += 50
+
+        # Supprimer une dose erro
+        elif button_a.was_pressed():
+            if dose >= 50:
+                dose -= 50
+            else:
+                pass  # Il existe pas de dose negative´
+
+        # Reinitialiser a zero
+        elif button_a.is_pressed():
+            tempo_initial = running_time()  # Capture le temps initial
+
+            # Tant que le bouton B est pressé, continue de vérifier
+            while button_a.is_pressed():
+                temps_ecoule = running_time() - tempo_initial  # Temps pendant lequel le bouton a été pressé
+
+                # Si le temps écoulé est supérieur ou égal à 2000ms, arrête d'ajouter
+                if temps_ecoule >= time_to_stop:
+                    dose = 0
+                    break  # Sort de la boucle si le bouton est pressé plus de 2 secondes
+
+
+        # Vérifie si le bouton B est pressé
+        elif button_b.is_pressed():
+            tempo_initial = running_time()  # Capture le temps initial
+
+            # Tant que le bouton B est pressé, continue de vérifier
+            while button_b.is_pressed():
+                temps_ecoule = running_time() - tempo_initial  # Temps pendant lequel le bouton a été pressé
+
+                # Si le temps écoulé est supérieur ou égal à 2000ms, arrête d'ajouter
+                if temps_ecoule >= time_to_stop:
+                    dose -= 50
+                    add = False
+                    break  # Sort de la boucle si le bouton est pressé plus de 2 secondes
+
+        elif dose >= 10:
+            display.scroll("{}".format(dose))
+
+    return dose
+
+
+def send_milk_dose(dose, type=3):
+    message = str(dose)
+    vig_m = vigenere(message, final_key, decryption=False)
+    radio.send(tlv(type, vig_m))  # CHIFFREE
+
+
 communication = True
+while communication:
+    show_image()
