@@ -308,7 +308,7 @@ def send_freefall(type=2, mouvement="freefall"):
 
 
 # Fonction pour verifier la temperature
-def check_temperature():
+def get_temperature():
     temp = str(temperature())
     return temp
 

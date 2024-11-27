@@ -271,10 +271,11 @@ def get_milk_consumed(type=3):
     radio.send(tlv(type, vig_m))  # CHIFFREE
 
 
-def get_temperature(type=4):
+def ask_temperature(type=4):
     message = "get_temperature"
     vig_m = vigenere(message, final_key, decryption=False)
     radio.send(tlv(type, vig_m))  # CHIFFREE
+
 
 
 def check_fever(temp):
@@ -363,3 +364,4 @@ def send_milk_dose(dose, type=3):
 communication = True
 while communication:
     show_image()
+
