@@ -356,5 +356,22 @@ while communication:
                 m = radio.receive()
                 if message:
                     pass
+        #verification du niveau d'agitation (verison 1.0)
+        niveau = check_agitation()
+        if niveau == "agitation elevee":
+            send_agitation()
+            sleep(1000)
+            sleeping = False
+            calm = False
+            while not calm:
+                display.show(Image.CONFUSED)
+                sleep(1000)
+                music.play(music.DOE)
+                sleep(1000)
+                rassurer_parent()
+                display.show(Image.HAPPY)
+                sleep(1000)
+                calm = True
+
 
 
