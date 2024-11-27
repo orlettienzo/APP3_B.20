@@ -247,3 +247,6 @@ while not connexion:
 
 # Test
 # radio.send(final_key)
+
+#Variable(s) globale(s)
+communication = True
