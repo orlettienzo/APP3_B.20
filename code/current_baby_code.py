@@ -228,7 +228,6 @@ nonce_str = str(nonce)
 
 # Envoi du nonce chiffre au Parent
 while not connexion:
-    break
     display.show("?")
     type = 1
     send_packet(key, type, nonce_str)
