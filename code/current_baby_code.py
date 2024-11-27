@@ -338,3 +338,10 @@ while communication:
     # de lait consommée
     if button_a.was_pressed():
         show_milk(str(milk_consumed))
+
+        # Vérifie les mouvements avec l'accéléromètre
+        movement = accelerometer.current_gesture()
+
+        # Vérifie si l'enfant est en chute libre
+        if movement == "freefall":
+            send_freefall()
