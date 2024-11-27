@@ -364,7 +364,7 @@ while communication:
         while not calm:
             display.show(Image.CONFUSED)
             sleep(1000)
-            music.play(music.DOE)
+            music.play(music.ODE)
             sleep(1000)
             rassurer_parent()
             display.show(Image.HAPPY)
