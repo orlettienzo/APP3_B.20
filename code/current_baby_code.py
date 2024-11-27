@@ -113,15 +113,14 @@ def unpack_data(encrypted_packet, key):
             (int)lenght:           Longueur de la donnée en caractères
             (str) message:         Données reçues
     """
-    m = radio.receive()
-    if m:
-        parts = m.split("|")
+    encrypted_packet = radio.receive()
+    if encrypted_packet:
+        parts = encrypted_packet.split("|")
         type = parts[0]
         lenght = parts[1]
         message = vigenere(parts[2], key, decryption=True)
-        encrypted_packet = (type, int(lenght), message)
-        return encrypted_packet
-
+        _unpacked = (type, int(lenght), message)
+        return _unpacked
     else:
         sleep(200)
 

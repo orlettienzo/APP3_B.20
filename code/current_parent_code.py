@@ -122,6 +122,8 @@ def unpack_data(encrypted_packet, key):
         message = vigenere(parts[2], key, decryption=True)
         _unpacked = (type, int(lenght), message)
         return _unpacked
+    else:
+        sleep(200)
 
 
 # Unpack the packet, check the validity and return the type, length and content
