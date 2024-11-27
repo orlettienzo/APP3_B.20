@@ -263,4 +263,59 @@ while not connexion:
 sleeping = True
 calm = True
 milk_consumed = 0
+
+
+# Fonctions Enfant
+def show_image():
+    baby_image = Image("99990:"
+                       "90000:"
+                       "99900:"
+                       "90000:"
+                       "99990:")
+    display.show(baby_image)
+
+
+# Fonction pour vérifier le niveau d'agitation
+def check_agitation():
+    agitation = accelerometer.get_strength()
+    if agitation < 1000:
+        return "agitation faible"
+    elif agitation < 3000:
+        return "agitation moyenne"
+    else:
+        return "agitation elevee"
+
+
+# Fonction pour envoyer un message sur l'agitation
+def send_agitation(type=2):
+    message = check_agitation()
+    vig_m = vigenere(message, final_key, decryption=False)
+    radio.send(tlv(type, vig_m))  # CHIFFREE
+
+
+# Fonction pour verifier la temperature
+def check_temperature():
+    temp = str(temperature())
+    return temp
+
+
+# Fonction pour envoyer un message sur la temperature
+def send_temperature(temp, type=4):
+    vig_temp = vigenere(str(temp), final_key, decryption=False)
+    radio.send(tlv(type, vig_temp))  # CHIFFREE
+
+
+# Fonction pour afficher la quantité de lait consommée
+def show_milk(milk_consumed):
+    display.scroll(str((milk_consumed) + " ml"))
+
+
+# Gestion de la consommation de lait
+def drink_milk(milk_consumed, dose):
+    milk_consumed += dose
+    return milk_consumed
+
+#Boucle reservée à la communication entre les micros
 communication = True
+while communication:
+    show_image()
