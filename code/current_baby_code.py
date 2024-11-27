@@ -228,6 +228,7 @@ nonce_str = str(nonce)
 
 # Envoi du nonce chiffre au Parent
 while not connexion:
+    break
     display.show("?")
     type = 1
     send_packet(key, type, nonce_str)
@@ -275,6 +276,13 @@ def show_image():
     display.show(baby_image)
 
 
+# Fonction pour rassurer le parent
+def rassurer_parent():
+    message = "calm"
+    vig_m = vigenere(message, final_key, decryption=False)
+    radio.send(tlv(type, vig_m))  # CHIFFREE
+
+
 # Fonction pour vérifier le niveau d'agitation
 def check_agitation():
     agitation = accelerometer.get_strength()
@@ -291,6 +299,12 @@ def send_agitation(type=2):
     message = check_agitation()
     vig_m = vigenere(message, final_key, decryption=False)
     radio.send(tlv(type, vig_m))  # CHIFFREE
+
+
+# Fonction pour envoyer un message si l'enfant est en chute libre
+def send_freefall(type=2, mouvement="freefall"):
+    vig_m = vigenere(mouvement, final_key, decryption=False)
+    radio.send(tlv(type, vig_m))
 
 
 # Fonction pour verifier la temperature
@@ -315,7 +329,12 @@ def drink_milk(milk_consumed, dose):
     milk_consumed += dose
     return milk_consumed
 
-#Boucle reservée à la communication entre les micros
+# Boucle reservée à la communication entre les micros
 communication = True
 while communication:
     show_image()
+
+    # Si le bouton A est pressé, affiche la quantité
+    # de lait consommée
+    if button_a.was_pressed():
+        show_milk(str(milk_consumed))
