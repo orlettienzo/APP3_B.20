@@ -351,6 +351,8 @@ while communication:
             #ci-dessous on va verifier si les parents se rapprochent de lui (version 1.0)
             while not calm:
                 message = "ping"
+                vig_m = vigenere(message, final_key, decryption = False)
+                radio.send(tlv(type = 2, vig_m))
                 m = radio.receive()
                 if message:
                     pass
