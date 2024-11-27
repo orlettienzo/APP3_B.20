@@ -364,4 +364,8 @@ def send_milk_dose(dose, type=3):
 communication = True
 while communication:
     show_image()
+    # on va demander la Q de lait consommée par l'enfant (version 1.0)
+    if button_a.was_pressed():
+        get_milk_consumed()
+
 
