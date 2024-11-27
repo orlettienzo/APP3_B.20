@@ -369,5 +369,13 @@ while communication:
     # on va demander la Q de lait consommée par l'enfant (version 1.0)
     if button_a.was_pressed():
         get_milk_consumed()
+        pass
+
+    #Réception des messages via radio (version 1.0)
+    message = radio.receive()
+    if message:
+        pass
+    else:
+        sleep(200)
 
 
