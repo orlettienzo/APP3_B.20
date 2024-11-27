@@ -258,3 +258,9 @@ while not connexion:
 
 # Test
 # radio.send(final_key)
+
+# Variables globales
+sleeping = True
+calm = True
+milk_consumed = 0
+communication = True
