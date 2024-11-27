@@ -345,3 +345,14 @@ while communication:
         # Vérifie si l'enfant est en chute libre
         if movement == "freefall":
             send_freefall()
+            sleeping = False
+            calm = False
+            display.show(Image.SAD)
+            #ci-dessous on va verifier si les parents se rapprochent de lui (version 1.0)
+            while not calm:
+                message = "ping"
+                m = radio.receive()
+                if message:
+                    pass
+
+
