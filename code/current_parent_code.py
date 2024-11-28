@@ -171,17 +171,13 @@ def calculate_challenge_response(challenge, key):
 
 
 # Ask for a new connection with a micro:bit of the same group
-def establish_connexion_Enfant(type, key):
+def establish_connexion_Parent(type, key):
     """
     Etablissement de la connexion avec l'autre micro:bit
     Si il y a une erreur, la valeur de retour est vide
-
-    :param (str) key:                  Clé de chiffrement
-	:return (srt)challenge_response:   Réponse au challenge
-    """
+	return (srt)challenge_response:   Réponse au challenge
+	"""
     hash_key = hashing(key)
-    vig_hash_key = vigenere(hash_key, key, decryption=False)
-    radio.send(tlv(type, vig_hash_key, nonce))
     answer = False
     while not answer:
         m = radio.receive()
@@ -189,10 +185,8 @@ def establish_connexion_Enfant(type, key):
             parts = m.split("|")
             des_vig = vigenere(parts[2], key, decryption=True)
             if des_vig == hash_key:
+                radio.send(tlv(type, vigenere(hash_key, key, decryption=False)))
                 return 1
-
-        sleep(200)
-
     return 0
 def main():
     return True
