@@ -268,9 +268,10 @@ while not connexion:
                         u = unpack_data(m, key)
                         if u != None:
                             if u[2] == hash_c:
+                                send_confirmation()
+                                sleep(100)
                                 display.show(Image.HAPPY)
                                 music.play(music.POWER_UP)
-                                send_confirmation()
                                 final_key += c
                                 sleep(1500)
                                 answer = True
@@ -384,7 +385,6 @@ while communication:
     niveau = check_agitation()
     if niveau == "agitation elevee":
         send_agitation(2, niveau)
-        sleep(1000)
         sleeping = False
         calm = False
         while not calm:
