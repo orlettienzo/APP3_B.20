@@ -101,6 +101,15 @@ def send_packet(key, type, content):
     radio.send(packet)
 
 
+# Fonction pour stocker les nonces dans la liste
+# (Liée à la fonction unpack_data() )
+def stock_nonce(element, liste):
+    if element not in liste:
+        liste.append(element)
+    else:
+        display.scroll("Duplicata")
+
+
 # Decrypt and unpack the packet received and return the fields value
 def unpack_data(encrypted_packet, key):
     """
@@ -116,6 +125,8 @@ def unpack_data(encrypted_packet, key):
 
     parts = encrypted_packet.split("|")
     m = parts[2].split(":")
+    nonce = m[0]
+    stock_nonce(nonce, nonce_lst)
     type = parts[0]
     lenght = parts[1]
     message = vigenere(m[1], key, decryption=True)
@@ -227,7 +238,7 @@ final_key = ""
 final_key += key
 
 # Nonce aleatoire
-nonce = random.randint(1, 1000)
+nonce = random.randint(2001, 4000)
 nonce_str = str(nonce)
 
 # Liste pour stocker les nonces
@@ -235,7 +246,7 @@ nonce_lst = []
 
 # Recuperer nonce + set seed
 while not connexion:
-    #break
+    # break
     type = 1
     display.show("?")
     result = calculate_challenge_response(m, key)

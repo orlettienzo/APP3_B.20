@@ -101,6 +101,15 @@ def send_packet(key, type, content):
     radio.send(packet)
 
 
+# Fonction pour stocker les nonces dans la liste
+# (Liée à la fonction unpack_data() )
+def stock_nonce(element, liste):
+    if element not in liste:
+        liste.append(element)
+    else:
+        display.scroll("Duplicata")
+
+
 # Decrypt and unpack the packet received and return the fields value
 def unpack_data(encrypted_packet, key):
     """
@@ -243,9 +252,9 @@ nonce_lst = []
 
 # Envoi du nonce chiffre au Parent
 while not connexion:
-    #break
+    # break
     # Nonce aleatoire
-    nonce = random.randint(1, 1000)
+    nonce = random.randint(1, 2000)
     nonce_str = str(nonce)
     display.show("?")
     type = 1
