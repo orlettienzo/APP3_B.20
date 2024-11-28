@@ -73,10 +73,12 @@ def vigenere(message, key, decryption=False):
     return text
 
 
-def tlv(type, message, nonce):
-    lenght = len(message)
+def tlv(type, message):
     message = message.strip()
-    _tlv = "{}|{}|{}:{}".format(type, lenght, nonce, message)
+    nonce = random.randint(1, 1000)
+    contenu = "{}:{}".format(nonce, message)
+    lenght = len(contenu)
+    _tlv = "{}|{}|{}".format(type, lenght, contenu)
     return _tlv
 
 
@@ -95,7 +97,7 @@ def send_packet(key, type, content):
 	:return none
     """
     vig_cont = vigenere(content, key, decryption=False)
-    packet = tlv(type, vig_cont, nonce)
+    packet = tlv(type, vig_cont)
     radio.send(packet)
 
 
@@ -145,7 +147,7 @@ def receive_packet(packet_received, key):
     message = packet_received[2]
 
     m = hashing(message)
-    to_send = tlv(type, vigenere(m, key, decryption=False), nonce)
+    to_send = tlv(type, vigenere(m, key, decryption=False))
     radio.send(to_send)
 
     return (type, lenght, message)
@@ -197,7 +199,7 @@ def establish_connexion_Parent(type, key):
             parts = m.split("|")
             des_vig = vigenere(parts[2], key, decryption=True)
             if des_vig == hash_key:
-                radio.send(tlv(type, vigenere(hash_key, key, decryption=False), nonce))
+                radio.send(tlv(type, vigenere(hash_key, key, decryption=False)))
                 return 1
     return 0
 
@@ -230,6 +232,7 @@ nonce_str = str(nonce)
 
 # Recuperer nonce + set seed
 while not connexion:
+    #break
     type = 1
     display.show("?")
     result = calculate_challenge_response(m, key)
@@ -255,9 +258,7 @@ while not connexion:
         vig_hash = vigenere(hash_c, key, decryption=False)
 
         # Envoi hash calcule
-        new_nonce = random.randint(1, 1000)
-        nn_str = str(new_nonce)
-        message = tlv(type, vig_hash, new_nonce)
+        message = tlv(type, vig_hash)
         radio.send(message)
 
         confirmation = False
@@ -279,6 +280,11 @@ while not connexion:
 
 # Test
 radio.send(final_key)
+for _ in range(5):
+    message = "ok"
+    vig_m = vigenere(message, key, decryption=False)
+    to_send = (tlv(1, vig_m))
+    radio.send(to_send)
 
 
 def show_image():
@@ -295,19 +301,19 @@ def show_image():
 def rassurer_enfant(type=1):
     message = "calm"
     vig_m = vigenere(message, final_key, decryption=False)
-    radio.send(tlv(type, vig_m, nonce))  # CHIFFREE
+    radio.send(tlv(type, vig_m))  # CHIFFREE
 
 
 def get_milk_consumed(type=3):
     message = "getMilk"
     vig_m = vigenere(message, final_key, decryption=False)
-    radio.send(tlv(type, vig_m, nonce))  # CHIFFREE
+    radio.send(tlv(type, vig_m))  # CHIFFREE
 
 
 def ask_temperature(type=4):
     message = "getTemperature"
     vig_m = vigenere(message, final_key, decryption=False)
-    radio.send(tlv(type, vig_m, nonce))  # CHIFFREE
+    radio.send(tlv(type, vig_m))  # CHIFFREE
 
 
 def check_fever(temp):
@@ -328,7 +334,7 @@ def check_fever(temp):
 def send_medicament(type=4):
     message = "medicament"
     vig_m = vigenere(message, final_key, decryption=False)
-    radio.send(tlv(type, vig_m, nonce))  # CHIFFREE
+    radio.send(tlv(type, vig_m))  # CHIFFREE
 
 
 def set_milk_dose():
@@ -390,7 +396,7 @@ def set_milk_dose():
 def send_milk_dose(dose, type=3):
     message = str(dose)
     vig_m = vigenere(message, final_key, decryption=False)
-    radio.send(tlv(type, vig_m, nonce))  # CHIFFREE
+    radio.send(tlv(type, vig_m))  # CHIFFREE
 
 
 communication = True
@@ -409,7 +415,31 @@ while communication:
     # Réception des messages via radio (version 1.0)
     message = radio.receive()
     if message:
-        pass
+        tupla = unpack_data(message, final_key)
+
+        if tupla != None:
+            # Reaction face a l'agitation de l'enfant (version 1.0)
+            if tupla[2] == "agitation elevee":
+                display.show(Image.SURPRISED)
+                music.play(music.BA_DING)
+                sleep(1000)
+                calm = False
+                while not calm:
+                    m = radio.receive()
+                    if m:
+                        tupla = unpack_data(m, final_key)
+                        if tupla != None:
+                            if tupla[2] == "calm":
+                                display.show(Image.HAPPY)
+                                music.play(music.POWER_UP)
+                        calm = True
+                    else:
+                        sleep(200)
+
+
+
+
+
     else:
         sleep(200)
 

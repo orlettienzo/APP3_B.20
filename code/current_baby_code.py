@@ -3,6 +3,7 @@ import radio
 import random
 import music
 
+
 # Can be used to filter the communication, only the ones with the same parameters will receive messages
 # radio.config(group=23, channel=2, address=0x11111111)
 # default : channel=7 (0-83), address = 0x75626974, group = 0 (0-255)
@@ -72,10 +73,12 @@ def vigenere(message, key, decryption=False):
     return text
 
 
-def tlv(type, message, nonce):
-    lenght = len(message)
+def tlv(type, message):
     message = message.strip()
-    _tlv = "{}|{}|{}:{}".format(type, lenght, nonce, message)
+    nonce = random.randint(1, 1000)
+    contenu = "{}:{}".format(nonce, message)
+    lenght = len(contenu)
+    _tlv = "{}|{}|{}".format(type, lenght, contenu)
     return _tlv
 
 
@@ -94,7 +97,7 @@ def send_packet(key, type, content):
 	:return none
     """
     vig_cont = vigenere(content, key, decryption=False)
-    packet = tlv(type, vig_cont, nonce)
+    packet = tlv(type, vig_cont)
     radio.send(packet)
 
 
@@ -144,7 +147,7 @@ def receive_packet(packet_received, key):
     message = packet_received[2]
 
     m = hashing(message)
-    to_send = tlv(type, vigenere(m, key, decryption=False), nonce)
+    to_send = tlv(type, vigenere(m, key, decryption=False))
     radio.send(to_send)
 
     return (type, lenght, message)
@@ -169,6 +172,7 @@ def calculate_challenge_response(challenge, key):
     else:
         sleep(200)
 
+
 def next_challenge(seed):
     """
     Cette fonction sert a calculer le resultat de la
@@ -176,7 +180,7 @@ def next_challenge(seed):
     """
     seed = int(seed)
     random.seed(seed)
-    value = random.randint(1,1000)
+    value = random.randint(1, 1000)
     return value
 
 
@@ -191,7 +195,7 @@ def establish_connexion_Enfant(type, key):
     """
     hash_key = hashing(key)
     vig_hash_key = vigenere(hash_key, key, decryption=False)
-    radio.send(tlv(type, vig_hash_key, nonce))
+    radio.send(tlv(type, vig_hash_key))
     answer = False
     while not answer:
         m = radio.receive()
@@ -205,13 +209,14 @@ def establish_connexion_Enfant(type, key):
 
     return 0
 
+
 def send_confirmation():
     message = "ok"
     m = hashing(message)
     vig_m = vigenere(m, key, decryption=False)
-    n = random.randint(1,1000)
-    to_send = tlv(type, vig_m, n)
+    to_send = tlv(type, vig_m)
     radio.send(to_send)
+
 
 def main():
     return True
@@ -233,10 +238,9 @@ m = radio.receive()
 final_key = ""
 final_key += key
 
-
-
 # Envoi du nonce chiffre au Parent
 while not connexion:
+    #break
     # Nonce aleatoire
     nonce = random.randint(1, 1000)
     nonce_str = str(nonce)
@@ -250,10 +254,10 @@ while not connexion:
             send_confirmation()
             u = unpack_data(m, key)
             if u != None:
-                racineRandom = int(u[2]) #racine random configuree
-                #radio.send(str(racineRandom))
+                racineRandom = int(u[2])  # racine random configuree
+                # radio.send(str(racineRandom))
 
-                #Prochain challenge
+                # Prochain challenge
                 challenge = next_challenge(racineRandom)
                 c = str(challenge)
                 hash_c = hashing(c)
@@ -275,7 +279,9 @@ while not connexion:
             sleep(200)
 
 # Test
-radio.send(final_key)
+# radio.send(final_key)
+# for _ in range(5):
+# send_confirmation()
 
 # Variables globales
 sleeping = True
@@ -297,7 +303,7 @@ def show_image():
 def rassurer_parent():
     message = "calm"
     vig_m = vigenere(message, final_key, decryption=False)
-    radio.send(tlv(type, vig_m, nonce))  # CHIFFREE
+    radio.send(tlv(2, vig_m))  # CHIFFREE
 
 
 # Fonction pour vérifier le niveau d'agitation
@@ -312,16 +318,15 @@ def check_agitation():
 
 
 # Fonction pour envoyer un message sur l'agitation
-def send_agitation(type=2):
-    message = check_agitation()
-    vig_m = vigenere(message, final_key, decryption=False)
-    radio.send(tlv(type, vig_m, nonce))  # CHIFFREE
+def send_agitation(type=2, agitation=None):
+    vig_m = vigenere(agitation, final_key, decryption=False)
+    radio.send(tlv(type, vig_m))  # CHIFFREE
 
 
 # Fonction pour envoyer un message si l'enfant est en chute libre
 def send_freefall(type=2, mouvement="freefall"):
     vig_m = vigenere(mouvement, final_key, decryption=False)
-    radio.send(tlv(type, vig_m, nonce))
+    radio.send(tlv(type, vig_m))
 
 
 # Fonction pour verifier la temperature
@@ -333,7 +338,7 @@ def get_temperature():
 # Fonction pour envoyer un message sur la temperature
 def send_temperature(temp, type=4):
     vig_temp = vigenere(str(temp), final_key, decryption=False)
-    radio.send(tlv(type, vig_temp, nonce))  # CHIFFREE
+    radio.send(tlv(type, vig_temp))  # CHIFFREE
 
 
 # Fonction pour afficher la quantité de lait consommée
@@ -345,6 +350,7 @@ def show_milk(milk_consumed):
 def drink_milk(milk_consumed, dose):
     milk_consumed += dose
     return milk_consumed
+
 
 # Boucle reservée à la communication entre les micros
 communication = True
@@ -365,28 +371,32 @@ while communication:
             sleeping = False
             calm = False
             display.show(Image.SAD)
-            #ci-dessous on va verifier si les parents se rapprochent de lui (version 1.0)
+            # ci-dessous on va verifier si les parents se rapprochent de lui (version 1.0)
             while not calm:
                 message = "ping"
-                vig_m = vigenere(message, final_key, decryption = False)
-                radio.send(tlv(2, vig_m, nonce))
+                vig_m = vigenere(message, final_key, decryption=False)
+                radio.send(tlv(2, vig_m))
                 m = radio.receive()
                 if message:
                     pass
-    #verification du niveau d'agitation (verison 1.0)
+
+    # verification du niveau d'agitation (verison 1.0)
     niveau = check_agitation()
     if niveau == "agitation elevee":
-        send_agitation()
+        send_agitation(2, niveau)
         sleep(1000)
         sleeping = False
         calm = False
         while not calm:
             display.show(Image.CONFUSED)
+            music.play(music.BA_DING)
             sleep(1000)
             music.play(music.ODE)
             sleep(1000)
             rassurer_parent()
+            sleep(200)
             display.show(Image.HAPPY)
+            music.play(music.POWER_UP)
             sleep(1000)
             calm = True
 
