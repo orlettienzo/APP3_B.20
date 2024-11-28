@@ -403,7 +403,7 @@ while communication:
 
     # on va demander la temperature de l'Enfant (version 1.0)
     if button_b.was_pressed():
-        get_temperature()
+        ask_temperature()
         pass
 
     # Réception des messages via radio (version 1.0)
