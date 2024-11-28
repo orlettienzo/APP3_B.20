@@ -3,12 +3,9 @@ import radio
 import random
 import music
 
-
 # Can be used to filter the communication, only the ones with the same parameters will receive messages
 # radio.config(group=23, channel=2, address=0x11111111)
 # default : channel=7 (0-83), address = 0x75626974, group = 0 (0-255)
-
-
 def hashing(string):
     """
     Hachage d'une chaîne de caractères fournie en paramètre.
@@ -75,10 +72,10 @@ def vigenere(message, key, decryption=False):
     return text
 
 
-def tlv(type, message):
+def tlv(type, message, nonce):
     lenght = len(message)
     message = message.strip()
-    _tlv = "{}|{}|{}".format(type, lenght, message)
+    _tlv = "{}|{}|{}:{}".format(type, lenght, nonce, message)
     return _tlv
 
 
@@ -97,7 +94,7 @@ def send_packet(key, type, content):
 	:return none
     """
     vig_cont = vigenere(content, key, decryption=False)
-    packet = tlv(type, vig_cont)
+    packet = tlv(type, vig_cont, nonce)
     radio.send(packet)
 
 
@@ -114,16 +111,13 @@ def unpack_data(encrypted_packet, key):
             (str) message:         Données reçues
     """
 
-    encrypted_packet = radio.receive()
-    if encrypted_packet:
-        parts = encrypted_packet.split("|")
-        type = parts[0]
-        lenght = parts[1]
-        message = vigenere(parts[2], key, decryption=True)
-        _unpacked = (type, int(lenght), message)
-        return _unpacked
-    else:
-        sleep(200)
+    parts = encrypted_packet.split("|")
+    m = parts[2].split(":")
+    type = parts[0]
+    lenght = parts[1]
+    message = vigenere(m[1], key, decryption=True)
+    _unpacked = (type, int(lenght), message)
+    return _unpacked
 
 
 # Unpack the packet, check the validity and return the type, length and content
@@ -150,10 +144,10 @@ def receive_packet(packet_received, key):
     message = packet_received[2]
 
     m = hashing(message)
-    to_send = tlv(type, vigenere(m, key, decryption=False))
+    to_send = tlv(type, vigenere(m, key, decryption=False), nonce)
     radio.send(to_send)
 
-    # return (type, lenght, message)
+    return (type, lenght, message)
 
 
 # Calculate the challenge response
@@ -177,7 +171,7 @@ def calculate_challenge_response(challenge, key):
 
 
 # Ask for a new connection with a micro:bit of the same group
-def establish_connexion_Parent(type, key):
+def establish_connexion_Enfant(type, key):
     """
     Etablissement de la connexion avec l'autre micro:bit
     Si il y a une erreur, la valeur de retour est vide
@@ -186,6 +180,8 @@ def establish_connexion_Parent(type, key):
 	:return (srt)challenge_response:   Réponse au challenge
     """
     hash_key = hashing(key)
+    vig_hash_key = vigenere(hash_key, key, decryption=False)
+    radio.send(tlv(type, vig_hash_key, nonce))
     answer = False
     while not answer:
         m = radio.receive()
@@ -193,11 +189,11 @@ def establish_connexion_Parent(type, key):
             parts = m.split("|")
             des_vig = vigenere(parts[2], key, decryption=True)
             if des_vig == hash_key:
-                radio.send(tlv(type, vigenere(hash_key, key, decryption=False)))
                 return 1
+
+        sleep(200)
+
     return 0
-
-
 def main():
     return True
 
