@@ -350,7 +350,7 @@ while communication:
             while not calm:
                 message = "ping"
                 vig_m = vigenere(message, final_key, decryption = False)
-                radio.send(tlv(type = 2, vig_m))
+                radio.send(tlv(2, vig_m))
                 m = radio.receive()
                 if message:
                     pass
