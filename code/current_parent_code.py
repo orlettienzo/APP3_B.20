@@ -401,6 +401,11 @@ while communication:
         get_milk_consumed()
         pass
 
+    # on va demander la temperature de l'Enfant (version 1.0)
+    if button_b.was_pressed():
+        get_temperature()
+        pass
+
     # Réception des messages via radio (version 1.0)
     message = radio.receive()
     if message:
