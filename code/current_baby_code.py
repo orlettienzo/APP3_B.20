@@ -279,10 +279,7 @@ while not connexion:
         else:
             sleep(200)
 
-# Test
-# radio.send(final_key)
-# for _ in range(5):
-# send_confirmation()
+
 
 # Variables globales
 sleeping = True
@@ -291,6 +288,20 @@ milk_consumed = 0
 
 
 # Fonctions Enfant
+
+# Classe représentant le portefeuille numérique de l'enfant
+class DigitalWallet:
+    def __init__(self, titulaire, numero_compte):
+        self.__titulaire = titulaire
+        self.__numero_compte = numero_compte
+        self.__solde = 0.0
+
+    def receive(self, valeur):
+        self.__solde += valeur
+
+# Initialisation du portefeuille
+baby_wallet = DigitalWallet('Micro Enfant', 'BE00 0001')
+
 def show_image():
     baby_image = Image("99990:"
                        "90000:"

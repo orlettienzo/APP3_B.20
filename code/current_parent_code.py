@@ -278,13 +278,53 @@ while not connexion:
     else:
         sleep(200)
 
-# Test
-radio.send(final_key)
-for _ in range(5):
-    message = "ok"
-    vig_m = vigenere(message, key, decryption=False)
-    to_send = (tlv(1, vig_m))
-    radio.send(to_send)
+
+
+
+# Dictionnaire des taux de change des devises - 08/11
+# Dictionnaire généré par l'API:
+# "Currencyapi"
+
+devises = {
+    "meta": {
+        "last_updated_at": "2024-11-07T23:59:59Z"
+    },
+    "data": {
+        "CAD": {
+            "code": "CAD",
+            "value": 105168.1281341745
+        },
+        "EUR": {
+            "code": "EUR",
+            "value": 70239.7648075961
+        },
+        "USD": {
+            "code": "USD",
+            "value": 75847.1329232132
+        }
+    }
+}
+
+# devises_new_values = {À REMPLIR} *À consulter nouvellement l'API en decembre pour pouvoir calculer l'appreciation du BTC
+
+euros = 1000
+def send_money(devises, amount):
+    current_btc = devises["data"]["EUR"]["value"]
+    btc = amount / current_btc
+    vig_btc = vigenere("btc", final_key, decryption=False)
+    radio.send(tlv(4, vig_btc))
+    answer = False
+    while not answer:
+        message = radio.receive()
+        if message:
+            tupla = unpack_data(message, final_key)
+            if tupla != None:
+                if tupla[2] == "send":
+                    vig_value = vigenere(str(btc), final_key, decryption=False)
+                    radio.send(tlv(4, vig_value))
+
+
+
 
 
 def show_image():
@@ -435,10 +475,6 @@ while communication:
                         calm = True
                     else:
                         sleep(200)
-
-
-
-
 
     else:
         sleep(200)
