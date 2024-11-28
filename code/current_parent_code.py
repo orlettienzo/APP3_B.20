@@ -3,6 +3,7 @@ import radio
 import random
 import music
 
+
 # Can be used to filter the communication, only the ones with the same parameters will receive messages
 # radio.config(group=23, channel=2, address=0x11111111)
 # default : channel=7 (0-83), address = 0x75626974, group = 0 (0-255)
@@ -161,13 +162,24 @@ def calculate_challenge_response(challenge, key):
     m = radio.receive()
     if m:
         parts = m.split("|")
-        challenge = parts[2]
-        graine = vigenere(challenge, key, decryption=True)
+        challenge = parts[2].split(":")
+        graine = vigenere(challenge[1], key, decryption=True)
         random.seed(int(graine))
         reponse = random.randint(1, 100)
         return str(reponse)
     else:
         sleep(200)
+
+
+def next_challenge(seed):
+    """
+    Cette fonction sert a calculer le resultat de la
+    fonction random avec la racine reçue
+    """
+    seed = int(seed)
+    random.seed(seed)
+    value = random.randint(1, 1000)
+    return value
 
 
 # Ask for a new connection with a micro:bit of the same group
@@ -185,9 +197,11 @@ def establish_connexion_Parent(type, key):
             parts = m.split("|")
             des_vig = vigenere(parts[2], key, decryption=True)
             if des_vig == hash_key:
-                radio.send(tlv(type, vigenere(hash_key, key, decryption=False)))
+                radio.send(tlv(type, vigenere(hash_key, key, decryption=False), nonce))
                 return 1
     return 0
+
+
 def main():
     return True
 
@@ -203,12 +217,16 @@ hash_pass = hashing(key)
 radio.on()
 radio.config(channel=20)
 connexion = False
-graine = None
+racineRandom = None
 hash_graine = None
 m = radio.receive()
 
 final_key = ""
 final_key += key
+
+# Nonce aleatoire
+nonce = random.randint(1, 1000)
+nonce_str = str(nonce)
 
 # Recuperer nonce + set seed
 while not connexion:
@@ -216,29 +234,52 @@ while not connexion:
     display.show("?")
     result = calculate_challenge_response(m, key)
     if result != None:
-        # Configuration de la graine locale
-        graine = int(result)
-        hash_graine = hashing(result)
-        vig_graine = vigenere(result, key, decryption=False)
-        final_key += result
-        # Configuration de la graine a distance
-        message = vig_graine + "_" + hash_graine
-        radio.send(tlv(type, message))
-        # Etablissement de la connexion
-        status = establish_connexion_Parent(type, final_key)
-        if status == 1:
-            display.show(Image.HAPPY)
-            music.play(music.POWER_UP)
-            sleep(1500)
-            connexion = True
-        else:
-            sleep(200)
+        racineRandom = int(result)  # configuration de la racine de la fonction random
+        # radio.send(str(racineRandom))
+        send_packet(key, type, racineRandom)  # configuration a distance
+
+        confirmation = False
+        while not confirmation:
+            m = radio.receive()
+            if m:
+                confirmation = True
+            else:
+                sleep(200)
+
+        # Prochain challenge
+        challenge = next_challenge(racineRandom)
+
+        # Calcul hash
+        c = str(challenge)
+        hash_c = hashing(c)
+        vig_hash = vigenere(hash_c, key, decryption=False)
+
+        # Envoi hash calcule
+        new_nonce = random.randint(1, 1000)
+        nn_str = str(new_nonce)
+        message = tlv(type, vig_hash, new_nonce)
+        radio.send(message)
+
+        confirmation = False
+        while not confirmation:
+            m = radio.receive()
+            if m:
+                display.show(Image.HAPPY)
+                music.play(music.POWER_UP)
+                sleep(1500)
+                final_key += c
+                confirmation = True
+            else:
+                sleep(200)
+
+        connexion = True
 
     else:
         sleep(200)
 
 # Test
-# radio.send(final_key)
+radio.send(final_key)
+
 
 def show_image():
     # 1. Définition de l'image initiale pour le micro:bit parent
@@ -254,20 +295,19 @@ def show_image():
 def rassurer_enfant(type=1):
     message = "calm"
     vig_m = vigenere(message, final_key, decryption=False)
-    radio.send(tlv(type, vig_m))  # CHIFFREE
+    radio.send(tlv(type, vig_m, nonce))  # CHIFFREE
 
 
 def get_milk_consumed(type=3):
-    message = "get_milk"
+    message = "getMilk"
     vig_m = vigenere(message, final_key, decryption=False)
-    radio.send(tlv(type, vig_m))  # CHIFFREE
+    radio.send(tlv(type, vig_m, nonce))  # CHIFFREE
 
 
 def ask_temperature(type=4):
-    message = "get_temperature"
+    message = "getTemperature"
     vig_m = vigenere(message, final_key, decryption=False)
-    radio.send(tlv(type, vig_m))  # CHIFFREE
-
+    radio.send(tlv(type, vig_m, nonce))  # CHIFFREE
 
 
 def check_fever(temp):
@@ -288,7 +328,7 @@ def check_fever(temp):
 def send_medicament(type=4):
     message = "medicament"
     vig_m = vigenere(message, final_key, decryption=False)
-    radio.send(tlv(type, vig_m))  # CHIFFREE
+    radio.send(tlv(type, vig_m, nonce))  # CHIFFREE
 
 
 def set_milk_dose():
@@ -350,7 +390,7 @@ def set_milk_dose():
 def send_milk_dose(dose, type=3):
     message = str(dose)
     vig_m = vigenere(message, final_key, decryption=False)
-    radio.send(tlv(type, vig_m))  # CHIFFREE
+    radio.send(tlv(type, vig_m, nonce))  # CHIFFREE
 
 
 communication = True
@@ -361,7 +401,7 @@ while communication:
         get_milk_consumed()
         pass
 
-    #Réception des messages via radio (version 1.0)
+    # Réception des messages via radio (version 1.0)
     message = radio.receive()
     if message:
         pass

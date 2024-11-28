@@ -169,6 +169,16 @@ def calculate_challenge_response(challenge, key):
     else:
         sleep(200)
 
+def next_challenge(seed):
+    """
+    Cette fonction sert a calculer le resultat de la
+    fonction random avec la racine reçue
+    """
+    seed = int(seed)
+    random.seed(seed)
+    value = random.randint(1,1000)
+    return value
+
 
 # Ask for a new connection with a micro:bit of the same group
 def establish_connexion_Enfant(type, key):
@@ -194,6 +204,15 @@ def establish_connexion_Enfant(type, key):
         sleep(200)
 
     return 0
+
+def send_confirmation():
+    message = "ok"
+    m = hashing(message)
+    vig_m = vigenere(m, key, decryption=False)
+    n = random.randint(1,1000)
+    to_send = tlv(type, vig_m, n)
+    radio.send(to_send)
+
 def main():
     return True
 
@@ -207,19 +226,20 @@ key = "HEISENBERG"
 hash_pass = hashing(key)
 radio.on()
 radio.config(channel=20)
-graine = None
+racineRandom = None
 connexion = False
 m = radio.receive()
 
 final_key = ""
 final_key += key
 
-# Nonce aleatoire
-nonce = random.randint(1, 100)
-nonce_str = str(nonce)
+
 
 # Envoi du nonce chiffre au Parent
 while not connexion:
+    # Nonce aleatoire
+    nonce = random.randint(1, 1000)
+    nonce_str = str(nonce)
     display.show("?")
     type = 1
     send_packet(key, type, nonce_str)
@@ -227,29 +247,35 @@ while not connexion:
     while not answer:
         m = radio.receive()
         if m:
-            parts = m.split("|")
-            p = parts[2].split("_")
-            graine = vigenere(p[0], key, decryption=True)
-            final_key += graine
-            hash_graine = hashing(graine)
-            if hash_graine == p[1]:
-                # Etablissement de la connexion
-                status = establish_connexion_Enfant(type, final_key)
-                if status == 1:
-                    display.show(Image.HAPPY)
-                    music.play(music.POWER_UP)
-                    sleep(1500)
-                    answer = True
-                else:
-                    sleep(200)
+            send_confirmation()
+            u = unpack_data(m, key)
+            if u != None:
+                racineRandom = int(u[2]) #racine random configuree
+                #radio.send(str(racineRandom))
 
+                #Prochain challenge
+                challenge = next_challenge(racineRandom)
+                c = str(challenge)
+                hash_c = hashing(c)
+                answer = False
+                while not answer:
+                    m = radio.receive()
+                    if m:
+                        u = unpack_data(m, key)
+                        if u != None:
+                            if u[2] == hash_c:
+                                display.show(Image.HAPPY)
+                                music.play(music.POWER_UP)
+                                send_confirmation()
+                                final_key += c
+                                sleep(1500)
+                                answer = True
+                connexion = True
         else:
             sleep(200)
 
-    connexion = True
-
 # Test
-# radio.send(final_key)
+radio.send(final_key)
 
 # Variables globales
 sleeping = True
@@ -271,7 +297,7 @@ def show_image():
 def rassurer_parent():
     message = "calm"
     vig_m = vigenere(message, final_key, decryption=False)
-    radio.send(tlv(type, vig_m))  # CHIFFREE
+    radio.send(tlv(type, vig_m, nonce))  # CHIFFREE
 
 
 # Fonction pour vérifier le niveau d'agitation
@@ -289,13 +315,13 @@ def check_agitation():
 def send_agitation(type=2):
     message = check_agitation()
     vig_m = vigenere(message, final_key, decryption=False)
-    radio.send(tlv(type, vig_m))  # CHIFFREE
+    radio.send(tlv(type, vig_m, nonce))  # CHIFFREE
 
 
 # Fonction pour envoyer un message si l'enfant est en chute libre
 def send_freefall(type=2, mouvement="freefall"):
     vig_m = vigenere(mouvement, final_key, decryption=False)
-    radio.send(tlv(type, vig_m))
+    radio.send(tlv(type, vig_m, nonce))
 
 
 # Fonction pour verifier la temperature
@@ -307,7 +333,7 @@ def get_temperature():
 # Fonction pour envoyer un message sur la temperature
 def send_temperature(temp, type=4):
     vig_temp = vigenere(str(temp), final_key, decryption=False)
-    radio.send(tlv(type, vig_temp))  # CHIFFREE
+    radio.send(tlv(type, vig_temp, nonce))  # CHIFFREE
 
 
 # Fonction pour afficher la quantité de lait consommée
@@ -343,7 +369,7 @@ while communication:
             while not calm:
                 message = "ping"
                 vig_m = vigenere(message, final_key, decryption = False)
-                radio.send(tlv(2, vig_m))
+                radio.send(tlv(2, vig_m, nonce))
                 m = radio.receive()
                 if message:
                     pass
