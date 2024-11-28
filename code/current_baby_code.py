@@ -238,6 +238,9 @@ m = radio.receive()
 final_key = ""
 final_key += key
 
+# Liste pour stocker les nonces
+nonce_lst = []
+
 # Envoi du nonce chiffre au Parent
 while not connexion:
     #break
@@ -279,8 +282,6 @@ while not connexion:
         else:
             sleep(200)
 
-
-
 # Variables globales
 sleeping = True
 calm = True
@@ -294,13 +295,32 @@ class DigitalWallet:
     def __init__(self, titulaire, numero_compte):
         self.__titulaire = titulaire
         self.__numero_compte = numero_compte
-        self.__solde = 0.0
+        self.solde = 0.0
 
     def receive(self, valeur):
-        self.__solde += valeur
+        if valeur != None:
+            self.solde += float(valeur)
+
+    def get_transfer(self):
+        answer = False
+        while not answer:
+            m = radio.receive()
+            if m:
+                tupla = unpack_data(m, final_key)
+                if tupla != None:
+                    value = tupla[2]
+                    answer = True
+                    return float(value)
+
+                else:
+                    sleep(100)
+            else:
+                sleep(100)
+
 
 # Initialisation du portefeuille
 baby_wallet = DigitalWallet('Micro Enfant', 'BE00 0001')
+
 
 def show_image():
     baby_image = Image("99990:"
@@ -414,7 +434,17 @@ while communication:
     # Réception des messages via radio (version 1.0)
     message = radio.receive()
     if message:
-        pass
+        tupla = unpack_data(message, final_key)
+        if tupla != None:
+            if tupla[2] == "btc":
+                send_packet(final_key, 4, "send")
+                value = baby_wallet.get_transfer()
+                baby_wallet.receive(value)
+                display.scroll("{} BTC".format(baby_wallet.solde))
+        else:
+            sleep(200)
+
+
     else:
         sleep(200)
 

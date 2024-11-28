@@ -230,6 +230,9 @@ final_key += key
 nonce = random.randint(1, 1000)
 nonce_str = str(nonce)
 
+# Liste pour stocker les nonces
+nonce_lst = []
+
 # Recuperer nonce + set seed
 while not connexion:
     #break
@@ -278,9 +281,6 @@ while not connexion:
     else:
         sleep(200)
 
-
-
-
 # Dictionnaire des taux de change des devises - 08/11
 # Dictionnaire généré par l'API:
 # "Currencyapi"
@@ -308,6 +308,8 @@ devises = {
 # devises_new_values = {À REMPLIR} *À consulter nouvellement l'API en decembre pour pouvoir calculer l'appreciation du BTC
 
 euros = 1000
+
+
 def send_money(devises, amount):
     current_btc = devises["data"]["EUR"]["value"]
     btc = amount / current_btc
@@ -320,11 +322,7 @@ def send_money(devises, amount):
             tupla = unpack_data(message, final_key)
             if tupla != None:
                 if tupla[2] == "send":
-                    vig_value = vigenere(str(btc), final_key, decryption=False)
-                    radio.send(tlv(4, vig_value))
-
-
-
+                    send_packet(final_key, 4, str(btc))
 
 
 def show_image():
@@ -441,6 +439,10 @@ def send_milk_dose(dose, type=3):
 
 communication = True
 while communication:
+
+    if pin_logo.is_touched():
+        send_money(devises, euros)
+
     show_image()
     # on va demander la Q de lait consommée par l'enfant (version 1.0)
     if button_a.was_pressed():
