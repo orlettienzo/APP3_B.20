@@ -379,6 +379,38 @@ def check_fever(temp):
     else:
         return "temperature_normale"
 
+def show_croix():
+    croix = Image("00900:"
+                "00900:"
+                "99999:"
+                "00900:"
+                "00900:")
+    display.show(croix)
+    sleep(100)
+    display.clear()
+    sleep(100)
+    display.show(croix)
+    sleep(100)
+    display.clear()
+    sleep(100)
+    display.show(croix)
+    sleep(100)
+    display.clear()
+    sleep(100)
+    display.show(croix)
+    sleep(100)
+    display.clear()
+    sleep(100)
+    display.show(croix)
+    sleep(100)
+    display.clear()
+    sleep(100)
+    display.show(croix)
+    sleep(100)
+    display.clear()
+    sleep(100)
+    display.show(croix)
+    sleep(700)
 
 def send_medicament(type=4):
     message = "medicament"
@@ -475,7 +507,7 @@ while communication:
                     if fever != "temperature_normale":
                         display.show(Image.SURPRISED)
                         sleep(500)
-                        display.scroll("+ + +")
+                        show_croix()
                         send_medicament()
                         answer = True
                     else:
