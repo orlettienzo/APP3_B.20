@@ -415,6 +415,46 @@ def show_milk(milk_consumed):
 def drink_milk(milk_consumed, dose):
     milk_consumed += dose
 
+#Valorisation bitcoin
+def show_valorisation(valeur_initiale, valeur_finale):
+    result = (valeur_finale - valeur_initiale) / valeur_initiale
+    pourcentage = result * 100
+    p = round(pourcentage, 2)
+    message = "{} %".format(p)
+    display.scroll(message)
+    if int(p) > 0:
+        sleep(100)
+        display.show(Image.ARROW_NE)
+        sleep(100)
+        display.show(Image.ARROW_NE)
+        sleep(100)
+        display.show(Image.ARROW_NE)
+        sleep(100)
+        display.show(Image.ARROW_NE)
+        sleep(700)
+        music.play(music.POWER_UP)
+        display.show(Image.HAPPY)
+        sleep(1000)
+
+    elif int(p) == 0:
+        sleep(100)
+        display.show("=")
+        sleep(500)
+
+    elif int(p) < 0:
+        sleep(100)
+        display.show(Image.ARROW_SE)
+        sleep(100)
+        display.show(Image.ARROW_SE)
+        sleep(100)
+        display.show(Image.ARROW_SE)
+        sleep(100)
+        display.show(Image.ARROW_SE)
+        sleep(700)
+        music.play(music.POWER_DOWN)
+        display.show(Image.SAD)
+        sleep(1000)
+
 
 # Boucle reservée à la communication entre les micros
 communication = True
@@ -426,23 +466,35 @@ while communication:
     if button_a.was_pressed():
         show_milk(str(milk_consumed))
 
-        # Vérifie les mouvements avec l'accéléromètre
-        movement = accelerometer.current_gesture()
+    # Vérifie les mouvements avec l'accéléromètre
+    movement = accelerometer.current_gesture()
 
-        # Vérifie si l'enfant est en chute libre
-        if movement == "freefall":
-            send_freefall()
-            sleeping = False
-            calm = False
-            display.show(Image.SAD)
-            # ci-dessous on va verifier si les parents se rapprochent de lui (version 1.0)
-            while not calm:
-                message = "ping"
-                vig_m = vigenere(message, final_key, decryption=False)
-                radio.send(tlv(2, vig_m))
-                m = radio.receive()
-                if message:
-                    pass
+    # Vérifie si l'enfant est en chute libre
+    if movement == "freefall":
+        send_freefall()
+        sleeping = False
+        calm = False
+        display.show(Image.SAD)
+        # ci-dessous on va verifier si les parents se rapprochent de lui (version 1.0)
+        while not calm:
+            message = "ping"
+            vig_m = vigenere(message, final_key, decryption=False)
+            radio.send(tlv(2, vig_m))
+            m = radio.receive()
+            if message:
+                pass
+
+    if button_b.was_pressed():
+        tupla = baby_wallet.cash_out_btc()
+        if tupla != None:
+            euros = tupla[0]
+            btc = tupla[1]
+            display.scroll("{} BTC".format(round(btc,4)))
+            sleep(100)
+            music.play(music.BA_DING)
+            display.scroll("{} EUR".format(euros))
+            sleep(100)
+            show_valorisation(valeur_initiale=1000, valeur_finale=euros)
 
     # verification du niveau d'agitation (verison 1.0)
     niveau = check_agitation()
@@ -472,7 +524,7 @@ while communication:
                 send_packet(final_key, 4, "send")
                 value = baby_wallet.get_transfer()
                 baby_wallet.receive(value)
-                display.scroll("{} BTC".format(baby_wallet.solde))
+                display.scroll("{} BTC".format(round(baby_wallet.solde,4)))
 
             if tupla[2] == "getTemperature":
                 temp = get_temperature()
