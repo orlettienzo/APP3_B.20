@@ -379,12 +379,13 @@ def check_fever(temp):
     else:
         return "temperature_normale"
 
+
 def show_croix():
     croix = Image("00900:"
-                "00900:"
-                "99999:"
-                "00900:"
-                "00900:")
+                  "00900:"
+                  "99999:"
+                  "00900:"
+                  "00900:")
     display.show(croix)
     sleep(100)
     display.clear()
@@ -411,6 +412,7 @@ def show_croix():
     sleep(100)
     display.show(croix)
     sleep(700)
+
 
 def send_medicament(type=4):
     message = "medicament"
@@ -490,7 +492,26 @@ while communication:
     # on va demander la Q de lait consommée par l'enfant (version 1.0)
     if button_a.was_pressed():
         get_milk_consumed()
-        pass
+        answer = False
+        while not answer:
+            m = radio.receive()
+            if m:
+                tupla = unpack_data(m, final_key)
+                if tupla != None:
+                    display.scroll("{} ml".format(tupla[2]))
+                    dose = set_milk_dose()
+                    send_milk_dose(dose)
+                    a = False
+                    while not a:
+                        m = radio.receive()
+                        if m:
+                            tupla = unpack_data(m, final_key)
+                            if tupla != None:
+                                display.scroll("{} ml".format(tupla[2]))
+                                a = True
+                    answer = True
+                else:
+                    sleep(200)
 
     # on va demander la temperature de l'Enfant (version 1.1)
     if button_b.was_pressed():

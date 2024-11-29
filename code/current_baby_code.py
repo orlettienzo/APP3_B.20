@@ -384,13 +384,12 @@ def send_temperature(temp, type=4):
 
 # Fonction pour afficher la quantité de lait consommée
 def show_milk(milk_consumed):
-    display.scroll(str((milk_consumed) + " ml"))
+    display.scroll(str(milk_consumed) + " ml")
 
 
 # Gestion de la consommation de lait
 def drink_milk(milk_consumed, dose):
     milk_consumed += dose
-    return milk_consumed
 
 
 # Boucle reservée à la communication entre les micros
@@ -469,6 +468,25 @@ while communication:
                             sleep(200)
                     else:
                         sleep(200)
+
+            if tupla[2] == "getMilk":
+                show_milk(milk_consumed)
+                send_packet(final_key, 3, milk_consumed)
+                answer = False
+                while not answer:
+                    m = radio.receive()
+                    if m:
+                        tupla = unpack_data(m, final_key)
+                        if tupla != None:
+                            dose = int(tupla[2])
+                            milk_consumed += dose
+                            display.show(Image.HAPPY)
+                            music.play(music.POWER_UP)
+                            sleep(1000)
+                            send_packet(final_key, 3, milk_consumed)
+                            show_milk(str(milk_consumed))
+                            answer = True
+
         else:
             sleep(200)
 
