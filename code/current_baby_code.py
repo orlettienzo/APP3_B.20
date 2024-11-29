@@ -252,7 +252,7 @@ nonce_lst = []
 
 # Envoi du nonce chiffre au Parent
 while not connexion:
-    # break
+    break
     # Nonce aleatoire
     nonce = random.randint(1, 2000)
     nonce_str = str(nonce)
@@ -450,6 +450,25 @@ while communication:
                 value = baby_wallet.get_transfer()
                 baby_wallet.receive(value)
                 display.scroll("{} BTC".format(baby_wallet.solde))
+
+            if tupla[2] == "getTemperature":
+                temp = get_temperature()
+                send_packet(final_key, 3, temp)
+                answer = False
+                while not answer:
+                    m = radio.receive()
+                    if m:
+                        tupla = unpack_data(m, final_key)
+                        if tupla != None:
+                            if tupla[2] == "medicament":
+                                display.show(Image.HAPPY)
+                                music.play(music.POWER_UP)
+                                sleep(1000)
+                                answer = True
+                        else:
+                            sleep(200)
+                    else:
+                        sleep(200)
         else:
             sleep(200)
 

@@ -246,7 +246,7 @@ nonce_lst = []
 
 # Recuperer nonce + set seed
 while not connexion:
-    # break
+    break
     type = 1
     display.show("?")
     result = calculate_challenge_response(m, key)
@@ -460,10 +460,29 @@ while communication:
         get_milk_consumed()
         pass
 
-    # on va demander la temperature de l'Enfant (version 1.0)
+    # on va demander la temperature de l'Enfant (version 1.1)
     if button_b.was_pressed():
         ask_temperature()
-        pass
+        answer = False
+        while not answer:
+            m = radio.receive()
+            if m:
+                tupla = unpack_data(m, final_key)
+                if tupla != None:
+                    temp = int(tupla[2])
+                    fever = check_fever(temp)
+                    display.scroll("{} C -> {}".format(temp, fever))
+                    if fever != "temperature_normale":
+                        display.show(Image.SURPRISED)
+                        sleep(500)
+                        display.scroll("+ + +")
+                        send_medicament()
+                        answer = True
+                    else:
+                        display.show(Image.HAPPY)
+                        answer = True
+            else:
+                sleep(200)
 
     # Réception des messages via radio (version 1.0)
     message = radio.receive()
