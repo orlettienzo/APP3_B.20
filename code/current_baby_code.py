@@ -301,6 +301,26 @@ milk_consumed = 0
 
 # Classe représentant le portefeuille numérique de l'enfant
 class DigitalWallet:
+
+    cotation_actuelle = {
+        "meta": {
+            "last_updated_at": "2024-11-28T23:59:59Z"
+        },
+        "data": {
+            "CAD": {
+                "code": "CAD",
+                "value": 134004.6817822797
+            },
+            "EUR": {
+                "code": "EUR",
+                "value": 90575.5390184203
+            },
+            "USD": {
+                "code": "USD",
+                "value": 95682.0736956224
+            }
+        }
+    }
     def __init__(self, titulaire, numero_compte):
         self.__titulaire = titulaire
         self.__numero_compte = numero_compte
@@ -326,6 +346,10 @@ class DigitalWallet:
             else:
                 sleep(100)
 
+    def cash_out_btc(self):
+        euros = self.solde * DigitalWallet.cotation_actuelle["data"]["EUR"]["value"]
+        currentbtc = euros / DigitalWallet.cotation_actuelle["data"]["EUR"]["value"]
+        return (euros, currentbtc)
 
 # Initialisation du portefeuille
 baby_wallet = DigitalWallet('Micro Enfant', 'BE00 0001')
