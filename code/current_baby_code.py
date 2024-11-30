@@ -283,7 +283,7 @@ while not connexion:
                                 send_confirmation()
                                 sleep(100)
                                 display.show(Image.HAPPY)
-                                music.play(music.POWER_UP)
+                                #music.play(music.POWER_UP)
                                 final_key += c
                                 sleep(1500)
                                 answer = True
@@ -521,7 +521,7 @@ while communication:
             btc = tupla[1]
             display.scroll("{} BTC".format(round(btc, 4)))
             sleep(100)
-            music.play(music.BA_DING)
+            #music.play(music.BA_DING)
             display.scroll("{} EUR".format(euros))
             sleep(100)
             show_valorisation(valeur_initiale=1000, valeur_finale=euros)
@@ -588,13 +588,16 @@ while communication:
                         tupla = unpack_data(m, final_key)
                         if tupla != None:
                             dose = int(tupla[2])
-                            milk_consumed += dose
-                            display.show(Image.HAPPY)
-                            music.play(music.POWER_UP)
-                            sleep(1000)
-                            send_packet(final_key, 3, milk_consumed)
-                            show_milk(str(milk_consumed))
-                            answer = True
+                            if dose > 0:
+                                milk_consumed += dose
+                                display.show(Image.HAPPY)
+                                music.play(music.POWER_UP)
+                                sleep(1000)
+                                send_packet(final_key, 3, milk_consumed)
+                                show_milk(str(milk_consumed))
+                                answer = True
+                            else:
+                                answer = True
 
             if tupla[2] == "etatEveil":
                 etat = check_agitation()
