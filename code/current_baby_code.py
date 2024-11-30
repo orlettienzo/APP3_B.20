@@ -556,8 +556,8 @@ while communication:
                         sleep(200)
 
             if tupla[2] == "getMilk":
-                show_milk(milk_consumed)
                 send_packet(final_key, 3, milk_consumed)
+                show_milk(milk_consumed)
                 answer = False
                 while not answer:
                     m = radio.receive()

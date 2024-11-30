@@ -246,7 +246,7 @@ nonce_lst = []
 
 # Recuperer nonce + set seed
 while not connexion:
-    break
+    # break
     type = 1
     display.show("?")
     result = calculate_challenge_response(m, key)
@@ -334,6 +334,7 @@ def send_money(devises, amount):
             if tupla != None:
                 if tupla[2] == "send":
                     send_packet(final_key, 4, str(btc))
+                    answer = True
 
 
 def show_image():
@@ -482,60 +483,69 @@ def send_milk_dose(dose, type=3):
     radio.send(tlv(type, vig_m))  # CHIFFREE
 
 
+cmpt_a = 0
+cmpt_b = 0
 communication = True
 while communication:
 
-    if pin_logo.is_touched():
-        send_money(devises, euros)
-
     show_image()
     # on va demander la Q de lait consommée par l'enfant (version 1.0)
-    if button_a.was_pressed():
-        get_milk_consumed()
-        answer = False
-        while not answer:
-            m = radio.receive()
-            if m:
-                tupla = unpack_data(m, final_key)
-                if tupla != None:
-                    display.scroll("{} ml".format(tupla[2]))
-                    dose = set_milk_dose()
-                    send_milk_dose(dose)
-                    a = False
-                    while not a:
-                        m = radio.receive()
-                        if m:
-                            tupla = unpack_data(m, final_key)
-                            if tupla != None:
-                                display.scroll("{} ml".format(tupla[2]))
-                                a = True
-                    answer = True
-                else:
-                    sleep(200)
-
-    # on va demander la temperature de l'Enfant (version 1.1)
-    if button_b.was_pressed():
-        ask_temperature()
-        answer = False
-        while not answer:
-            m = radio.receive()
-            if m:
-                tupla = unpack_data(m, final_key)
-                if tupla != None:
-                    temp = int(tupla[2])
-                    fever = check_fever(temp)
-                    display.scroll("{} C -> {}".format(temp, fever))
-                    if fever != "temperature_normale":
-                        display.show(Image.SURPRISED)
-                        sleep(500)
-                        show_croix()
-                        send_medicament()
+    if button_a.is_pressed() and button_b.is_pressed() == False:
+        cmpt_a += 1
+        if cmpt_a >= 1:
+            get_milk_consumed()
+            answer = False
+            while not answer:
+                m = radio.receive()
+                if m:
+                    tupla = unpack_data(m, final_key)
+                    if tupla != None:
+                        display.scroll("{} ml".format(tupla[2]))
+                        dose = set_milk_dose()
+                        send_milk_dose(dose)
+                        a = False
+                        while not a:
+                            m = radio.receive()
+                            if m:
+                                tupla = unpack_data(m, final_key)
+                                if tupla != None:
+                                    display.scroll("{} ml".format(tupla[2]))
+                                    a = True
                         answer = True
                     else:
-                        display.show(Image.HAPPY)
-                        answer = True
-            else:
-                sleep(200)
+                        sleep(200)
+            cmpt_a = 0
+
+    # on va demander la temperature de l'Enfant (version 1.1)
+    if button_b.is_pressed() and button_a.is_pressed() == False:
+        cmpt_b += 1
+        if cmpt_b >= 1:
+            ask_temperature()
+            answer = False
+            while not answer:
+                m = radio.receive()
+                if m:
+                    tupla = unpack_data(m, final_key)
+                    if tupla != None:
+                        temp = int(tupla[2])
+                        fever = check_fever(temp)
+                        display.scroll("{} C -> {}".format(temp, fever))
+                        if fever != "temperature_normale":
+                            display.show(Image.SURPRISED)
+                            sleep(500)
+                            show_croix()
+                            send_medicament()
+                            answer = True
+                        else:
+                            display.show(Image.HAPPY)
+                            answer = True
+                else:
+                    sleep(200)
+            cmpt_b = 0
+
+    if button_a.is_pressed() and button_b.is_pressed():
+        sleep(2000)
+        send_money(devises, euros)
 
     # Réception des messages via radio (version 1.0)
     message = radio.receive()
@@ -570,8 +580,8 @@ while communication:
                     if message:
                         _, ping, _ = message
                         if ping != None:
-                            if ping > -45:
-                                send_packet(final_key, type, "calm")
+                            if ping > -35:
+                                send_packet(final_key, 2, "calm")
                                 display.show(Image.HAPPY)
                                 music.play(music.POWER_UP)
                                 sleep(1000)
@@ -580,8 +590,6 @@ while communication:
                         display.show(Image.SAD)
 
         sleep(1000)
-
-
 
     else:
         sleep(200)
