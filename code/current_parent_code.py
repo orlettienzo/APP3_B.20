@@ -483,6 +483,24 @@ def send_milk_dose(dose, type=3):
     radio.send(tlv(type, vig_m))  # CHIFFREE
 
 
+def check_etat_eveil():
+    message = "etatEveil"
+    send_packet(final_key, 1, message)
+    answer = False
+    while not answer:
+        m = radio.receive()
+        if m:
+            tupla = unpack_data(m, final_key)
+            if tupla != None:
+                etat = tupla[2]
+                display.scroll("{}".format(etat))
+                answer = True
+            else:
+                sleep(200)
+        else:
+            sleep(200)
+
+
 cmpt_a = 0
 cmpt_b = 0
 communication = True
@@ -547,6 +565,9 @@ while communication:
         sleep(2000)
         send_money(devises, euros)
 
+    if pin_logo.is_touched():
+        check_etat_eveil()
+
     # Réception des messages via radio (version 1.0)
     message = radio.receive()
     if message:
@@ -593,5 +614,4 @@ while communication:
 
     else:
         sleep(200)
-
 
