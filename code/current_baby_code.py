@@ -629,8 +629,17 @@ while communication:
                 valeur_initiale = parts[0]
                 btc = float(parts[1])
                 baby_wallet.receive(btc)
-                send_confirmation()
                 display.scroll("{} BTC".format(round(baby_wallet.solde, 4)))
+                send_confirmation()
+                check = Image("00000:"
+                              "00009:"
+                              "00090:"
+                              "90900:"
+                              "09000:")
+
+                display.show(check)
+                # music.play(music.BA_DING)
+                sleep(1500)
 
 
         else:

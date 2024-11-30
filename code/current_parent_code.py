@@ -316,6 +316,7 @@ devises = {
     }
 }
 
+
 # devises_new_values = {À REMPLIR} *À consulter nouvellement l'API en decembre pour pouvoir calculer l'appreciation du BTC
 def set_amount():
     euros = 0
@@ -369,6 +370,7 @@ def set_amount():
 
     return euros
 
+
 def send_btc(devises):
     amount = set_amount()
     current_btc = devises["data"]["EUR"]["value"]
@@ -379,6 +381,15 @@ def send_btc(devises):
     while not answer:
         message = radio.receive()
         if message:
+            check = Image("00000:"
+                          "00009:"
+                          "00090:"
+                          "90900:"
+                          "09000:")
+
+            display.show(check)
+            # music.play(music.BA_DING)
+            sleep(1500)
             answer = True
         else:
             sleep(200)
