@@ -122,14 +122,14 @@ def unpack_data(encrypted_packet, key):
             (int)lenght:           Longueur de la donnée en caractères
             (str) message:         Données reçues
     """
-
-    parts = encrypted_packet.split("|")
-    m = parts[2].split(":")
-    type = parts[0]
-    lenght = parts[1]
-    message = vigenere(m[1], key, decryption=True)
-    _unpacked = (type, int(lenght), message)
-    return _unpacked
+    if encrypted_packet != None:
+        parts = encrypted_packet.split("|")
+        m = parts[2].split(":")
+        type = parts[0]
+        lenght = parts[1]
+        message = vigenere(m[1], key, decryption=True)
+        _unpacked = (type, int(lenght), message)
+        return _unpacked
 
 
 # Unpack the packet, check the validity and return the type, length and content
@@ -301,7 +301,6 @@ milk_consumed = 0
 
 # Classe représentant le portefeuille numérique de l'enfant
 class DigitalWallet:
-
     cotation_actuelle = {
         "meta": {
             "last_updated_at": "2024-11-28T23:59:59Z"
@@ -321,6 +320,7 @@ class DigitalWallet:
             }
         }
     }
+
     def __init__(self, titulaire, numero_compte):
         self.__titulaire = titulaire
         self.__numero_compte = numero_compte
@@ -350,6 +350,7 @@ class DigitalWallet:
         euros = self.solde * DigitalWallet.cotation_actuelle["data"]["EUR"]["value"]
         currentbtc = euros / DigitalWallet.cotation_actuelle["data"]["EUR"]["value"]
         return (euros, currentbtc)
+
 
 # Initialisation du portefeuille
 baby_wallet = DigitalWallet('Micro Enfant', 'BE00 0001')
@@ -415,7 +416,8 @@ def show_milk(milk_consumed):
 def drink_milk(milk_consumed, dose):
     milk_consumed += dose
 
-#Valorisation bitcoin
+
+# Valorisation bitcoin
 def show_valorisation(valeur_initiale, valeur_finale):
     result = (valeur_finale - valeur_initiale) / valeur_initiale
     pourcentage = result * 100
@@ -478,18 +480,26 @@ while communication:
         # ci-dessous on va verifier si les parents se rapprochent de lui (version 1.0)
         while not calm:
             message = "ping"
-            vig_m = vigenere(message, final_key, decryption=False)
-            radio.send(tlv(2, vig_m))
+            send_packet(final_key, 2, message)
+            sleep(700)
             m = radio.receive()
             if message:
-                pass
+                tupla = unpack_data(m, final_key)
+                if tupla != None:
+                    if tupla[2] == "calm":
+                        display.show(Image.HAPPY)
+                        music.play(music.POWER_UP)
+                        sleep(1000)
+                        calm = True
+            else:
+                display.show(Image.SAD)
 
     if button_b.was_pressed():
         tupla = baby_wallet.cash_out_btc()
         if tupla != None:
             euros = tupla[0]
             btc = tupla[1]
-            display.scroll("{} BTC".format(round(btc,4)))
+            display.scroll("{} BTC".format(round(btc, 4)))
             sleep(100)
             music.play(music.BA_DING)
             display.scroll("{} EUR".format(euros))
@@ -524,7 +534,7 @@ while communication:
                 send_packet(final_key, 4, "send")
                 value = baby_wallet.get_transfer()
                 baby_wallet.receive(value)
-                display.scroll("{} BTC".format(round(baby_wallet.solde,4)))
+                display.scroll("{} BTC".format(round(baby_wallet.solde, 4)))
 
             if tupla[2] == "getTemperature":
                 temp = get_temperature()

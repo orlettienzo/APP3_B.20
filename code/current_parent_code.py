@@ -561,6 +561,28 @@ while communication:
                     else:
                         sleep(200)
 
+            if tupla[2] == "freefall":
+                calm = False
+                display.show(Image.SURPRISED)
+                sleep(500)
+                while not calm:
+                    message = radio.receive_full()
+                    if message:
+                        _, ping, _ = message
+                        if ping != None:
+                            if ping > -45:
+                                send_packet(final_key, type, "calm")
+                                display.show(Image.HAPPY)
+                                music.play(music.POWER_UP)
+                                sleep(1000)
+                                calm = True
+                    else:
+                        display.show(Image.SAD)
+
+        sleep(1000)
+
+
+
     else:
         sleep(200)
 
