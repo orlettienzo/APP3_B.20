@@ -401,6 +401,10 @@ def get_temperature():
     return temp
 
 
+def show_temperature():
+    display.scroll("{} C".format(temperature()))
+
+
 # Fonction pour envoyer un message sur la temperature
 def send_temperature(temp, type=4):
     vig_temp = vigenere(str(temp), final_key, decryption=False)
@@ -458,6 +462,8 @@ def show_valorisation(valeur_initiale, valeur_finale):
         sleep(1000)
 
 
+cmpt_a = 0
+cmpt_b = 0
 # Boucle reservée à la communication entre les micros
 communication = True
 while communication:
@@ -465,8 +471,13 @@ while communication:
 
     # Si le bouton A est pressé, affiche la quantité
     # de lait consommée
-    if button_a.was_pressed():
-        show_milk(str(milk_consumed))
+    if button_a.is_pressed() and button_b.is_pressed() == False:
+        cmpt_a += 1
+        if cmpt_a >= 1:
+            show_milk(str(milk_consumed))
+            cmpt_a = 0
+        else:
+            sleep(200)
 
     # Vérifie les mouvements avec l'accéléromètre
     movement = accelerometer.current_gesture()
@@ -494,7 +505,16 @@ while communication:
             else:
                 display.show(Image.SAD)
 
-    if button_b.was_pressed():
+    if button_b.is_pressed() and button_a.is_pressed() == False:
+        cmpt_b += 1
+        if cmpt_b >= 1:
+            show_temperature()
+            cmpt_b = 0
+        else:
+            sleep(200)
+
+    if button_a.is_pressed() and button_b.is_pressed():
+        sleep(1500)
         tupla = baby_wallet.cash_out_btc()
         if tupla != None:
             euros = tupla[0]
@@ -505,6 +525,8 @@ while communication:
             display.scroll("{} EUR".format(euros))
             sleep(100)
             show_valorisation(valeur_initiale=1000, valeur_finale=euros)
+        else:
+            sleep(200)
 
     # verification du niveau d'agitation (verison 1.0)
     niveau = check_agitation()
@@ -539,6 +561,7 @@ while communication:
             if tupla[2] == "getTemperature":
                 temp = get_temperature()
                 send_packet(final_key, 3, temp)
+                display.scroll("{} C".format(str(temp)))
                 answer = False
                 while not answer:
                     m = radio.receive()
@@ -572,6 +595,10 @@ while communication:
                             send_packet(final_key, 3, milk_consumed)
                             show_milk(str(milk_consumed))
                             answer = True
+
+            if tupla[2] == "etatEveil":
+                etat = check_agitation()
+                send_packet(final_key, 1, etat)
 
         else:
             sleep(200)
