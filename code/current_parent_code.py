@@ -246,7 +246,7 @@ nonce_lst = []
 
 # Recuperer nonce + set seed
 while not connexion:
-    # break
+    break
     type = 1
     display.show("?")
     result = calculate_challenge_response(m, key)
@@ -317,24 +317,71 @@ devises = {
 }
 
 # devises_new_values = {À REMPLIR} *À consulter nouvellement l'API en decembre pour pouvoir calculer l'appreciation du BTC
+def set_amount():
+    euros = 0
+    add = True
+    time_to_stop = 2000
+    while add:
 
-euros = 1000
+        if euros < 10:
+            display.show("{}".format(euros))
+
+        if button_b.was_pressed():
+            euros += 100
+
+        # Supprimer une dose erro
+        elif button_a.was_pressed():
+            if euros >= 100:
+                euros -= 100
+            else:
+                pass  # Il existe pas de dose negative´
+
+        # Reinitialiser a zero
+        elif button_a.is_pressed():
+            tempo_initial = running_time()  # Capture le temps initial
+
+            # Tant que le bouton B est pressé, continue de vérifier
+            while button_a.is_pressed():
+                temps_ecoule = running_time() - tempo_initial  # Temps pendant lequel le bouton a été pressé
+
+                # Si le temps écoulé est supérieur ou égal à 2000ms, arrête d'ajouter
+                if temps_ecoule >= time_to_stop:
+                    euros = 0
+                    break  # Sort de la boucle si le bouton est pressé plus de 2 secondes
 
 
-def send_money(devises, amount):
+        # Vérifie si le bouton B est pressé
+        elif button_b.is_pressed():
+            tempo_initial = running_time()  # Capture le temps initial
+
+            # Tant que le bouton B est pressé, continue de vérifier
+            while button_b.is_pressed():
+                temps_ecoule = running_time() - tempo_initial  # Temps pendant lequel le bouton a été pressé
+
+                # Si le temps écoulé est supérieur ou égal à 2000ms, arrête d'ajouter
+                if temps_ecoule >= time_to_stop:
+                    euros -= 100
+                    add = False
+                    break  # Sort de la boucle si le bouton est pressé plus de 2 secondes
+
+        elif euros >= 10:
+            display.scroll("{}".format(euros))
+
+    return euros
+
+def send_btc(devises):
+    amount = set_amount()
     current_btc = devises["data"]["EUR"]["value"]
     btc = amount / current_btc
-    vig_btc = vigenere("btc", final_key, decryption=False)
-    radio.send(tlv(4, vig_btc))
+    message = str(amount) + "_" + str(btc) + "_" + "btc"
+    send_packet(final_key, 4, message)
     answer = False
     while not answer:
         message = radio.receive()
         if message:
-            tupla = unpack_data(message, final_key)
-            if tupla != None:
-                if tupla[2] == "send":
-                    send_packet(final_key, 4, str(btc))
-                    answer = True
+            answer = True
+        else:
+            sleep(200)
 
 
 def show_image():
@@ -563,7 +610,7 @@ while communication:
 
     if button_a.is_pressed() and button_b.is_pressed():
         sleep(2000)
-        send_money(devises, euros)
+        send_btc(devises)
 
     if pin_logo.is_touched():
         check_etat_eveil()

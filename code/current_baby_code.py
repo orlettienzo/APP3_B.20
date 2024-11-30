@@ -283,7 +283,7 @@ while not connexion:
                                 send_confirmation()
                                 sleep(100)
                                 display.show(Image.HAPPY)
-                                #music.play(music.POWER_UP)
+                                # music.play(music.POWER_UP)
                                 final_key += c
                                 sleep(1500)
                                 answer = True
@@ -301,6 +301,26 @@ milk_consumed = 0
 
 # Classe représentant le portefeuille numérique de l'enfant
 class DigitalWallet:
+    ancienne_cotation = {
+        "meta": {
+            "last_updated_at": "2024-11-07T23:59:59Z"
+        },
+        "data": {
+            "CAD": {
+                "code": "CAD",
+                "value": 105168.1281341745
+            },
+            "EUR": {
+                "code": "EUR",
+                "value": 70239.7648075961
+            },
+            "USD": {
+                "code": "USD",
+                "value": 75847.1329232132
+            }
+        }
+    }
+
     cotation_actuelle = {
         "meta": {
             "last_updated_at": "2024-11-28T23:59:59Z"
@@ -349,7 +369,53 @@ class DigitalWallet:
     def cash_out_btc(self):
         euros = self.solde * DigitalWallet.cotation_actuelle["data"]["EUR"]["value"]
         currentbtc = euros / DigitalWallet.cotation_actuelle["data"]["EUR"]["value"]
+        self.solde = 0
         return (euros, currentbtc)
+
+    def show_valorisation(self):
+        valeur_initiale = self.solde * DigitalWallet.ancienne_cotation["data"]["EUR"]["value"]
+        valeur_finale = self.solde * DigitalWallet.cotation_actuelle["data"]["EUR"]["value"]
+        pourcentage = ((valeur_finale - valeur_initiale) / valeur_initiale) * 100
+        p = round(pourcentage, 1)
+
+        currentbtc = valeur_finale / DigitalWallet.cotation_actuelle["data"]["EUR"]["value"]
+
+        display.scroll("{} EUR".format(valeur_finale))
+        sleep(300)
+        display.scroll("{} BTC".format(currentbtc))
+        sleep(300)
+        if int(p) > 0:
+            sleep(100)
+            display.show(Image.ARROW_NE)
+            sleep(100)
+            display.show(Image.ARROW_NE)
+            sleep(100)
+            display.show(Image.ARROW_NE)
+            sleep(100)
+            display.show(Image.ARROW_NE)
+            sleep(700)
+            music.play(music.POWER_UP)
+            display.show(Image.HAPPY)
+            sleep(1000)
+
+        elif int(p) == 0:
+            sleep(100)
+            display.show("=")
+            sleep(500)
+
+        elif int(p) < 0:
+            sleep(100)
+            display.show(Image.ARROW_SE)
+            sleep(100)
+            display.show(Image.ARROW_SE)
+            sleep(100)
+            display.show(Image.ARROW_SE)
+            sleep(100)
+            display.show(Image.ARROW_SE)
+            sleep(700)
+            music.play(music.POWER_DOWN)
+            display.show(Image.SAD)
+            sleep(1000)
 
 
 # Initialisation du portefeuille
@@ -421,47 +487,8 @@ def drink_milk(milk_consumed, dose):
     milk_consumed += dose
 
 
-# Valorisation bitcoin
-def show_valorisation(valeur_initiale, valeur_finale):
-    result = (valeur_finale - valeur_initiale) / valeur_initiale
-    pourcentage = result * 100
-    p = round(pourcentage, 2)
-    message = "{} %".format(p)
-    display.scroll(message)
-    if int(p) > 0:
-        sleep(100)
-        display.show(Image.ARROW_NE)
-        sleep(100)
-        display.show(Image.ARROW_NE)
-        sleep(100)
-        display.show(Image.ARROW_NE)
-        sleep(100)
-        display.show(Image.ARROW_NE)
-        sleep(700)
-        music.play(music.POWER_UP)
-        display.show(Image.HAPPY)
-        sleep(1000)
-
-    elif int(p) == 0:
-        sleep(100)
-        display.show("=")
-        sleep(500)
-
-    elif int(p) < 0:
-        sleep(100)
-        display.show(Image.ARROW_SE)
-        sleep(100)
-        display.show(Image.ARROW_SE)
-        sleep(100)
-        display.show(Image.ARROW_SE)
-        sleep(100)
-        display.show(Image.ARROW_SE)
-        sleep(700)
-        music.play(music.POWER_DOWN)
-        display.show(Image.SAD)
-        sleep(1000)
-
-
+valeur_initiale = 0
+valeur_finale = 0
 cmpt_a = 0
 cmpt_b = 0
 # Boucle reservée à la communication entre les micros
@@ -521,10 +548,10 @@ while communication:
             btc = tupla[1]
             display.scroll("{} BTC".format(round(btc, 4)))
             sleep(100)
-            #music.play(music.BA_DING)
+            # music.play(music.BA_DING)
             display.scroll("{} EUR".format(euros))
             sleep(100)
-            show_valorisation(valeur_initiale=1000, valeur_finale=euros)
+            baby_wallet.show_valorisation()
         else:
             sleep(200)
 
@@ -552,12 +579,6 @@ while communication:
     if message:
         tupla = unpack_data(message, final_key)
         if tupla != None:
-            if tupla[2] == "btc":
-                send_packet(final_key, 4, "send")
-                value = baby_wallet.get_transfer()
-                baby_wallet.receive(value)
-                display.scroll("{} BTC".format(round(baby_wallet.solde, 4)))
-
             if tupla[2] == "getTemperature":
                 temp = get_temperature()
                 send_packet(final_key, 3, temp)
@@ -602,6 +623,15 @@ while communication:
             if tupla[2] == "etatEveil":
                 etat = check_agitation()
                 send_packet(final_key, 1, etat)
+
+            if tupla[2][-3:] == "btc":
+                parts = tupla[2].split("_")
+                valeur_initiale = parts[0]
+                btc = float(parts[1])
+                baby_wallet.receive(btc)
+                send_confirmation()
+                display.scroll("{} BTC".format(round(baby_wallet.solde, 4)))
+
 
         else:
             sleep(200)
