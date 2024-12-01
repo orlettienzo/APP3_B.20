@@ -27,6 +27,27 @@
 </ul>
 <br>
 
+<h2 align="left">📖 Guide d'utilisation</h2>
+
+<h3 align="left">Micro:bit Enfant</h3>
+<p style="display: inline;">
+  <img src="./images/en0.png" alt="Image en0" width="250" style="margin: 10px;">
+  <img src="./images/en1.png" alt="Image en1" width="250" style="margin: 10px;">
+  <img src="./images/en2.png" alt="Image en2" width="250" style="margin: 10px;">
+  <img src="./images/en3.png" alt="Image en3" width="250" style="margin: 10px;">
+</p>
+
+<h3 align="left">Micro:bit Parent</h3>
+<p style="display: inline;">
+  <img src="./images/pa0.png" alt="Image pa0" width="250" style="margin: 10px;">
+  <img src="./images/pa1.png" alt="Image pa1" width="250" style="margin: 10px;">
+  <img src="./images/pa2.png" alt="Image pa2" width="250" style="margin: 10px;">
+  <img src="./images/pa3.png" alt="Image pa3" width="250" style="margin: 10px;">
+  <img src="./images/pa4.png" alt="Image pa4" width="250" style="margin: 10px;">
+</p>
+<br>
+
+
 <h2 align="left">📞 Contact</h2>
 <ul>
   <li>enzo.andrade@student.uclouvain.be</li>
