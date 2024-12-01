@@ -1,12 +1,17 @@
+#1.Imports
 from microbit import *
 import radio
 import random
 import music
 
 
-# Can be used to filter the communication, only the ones with the same parameters will receive messages
-# radio.config(group=23, channel=2, address=0x11111111)
-# default : channel=7 (0-83), address = 0x75626974, group = 0 (0-255)
+##########################################################################################
+
+                                    ### PARENT ###
+
+##########################################################################################
+
+#2.Fonctions Chiffrement
 def hashing(string):
     """
     Hachage d'une chaîne de caractères fournie en paramètre.
@@ -72,19 +77,18 @@ def vigenere(message, key, decryption=False):
             text += char
     return text
 
-
 def tlv(type, message):
     message = message.strip()
     nonce = random.randint(1, 1000)
+    if nonce not in nonce_lst:
+        nonce_lst.append(nonce)
     contenu = "{}:{}".format(nonce, message)
     lenght = len(contenu)
     _tlv = "{}|{}|{}".format(type, lenght, contenu)
     return _tlv
 
-
 def get_hash(string):
     return hashing(string)
-
 
 def send_packet(key, type, content):
     """
@@ -100,7 +104,6 @@ def send_packet(key, type, content):
     packet = tlv(type, vig_cont)
     radio.send(packet)
 
-
 # Fonction pour stocker les nonces dans la liste
 # (Liée à la fonction unpack_data() )
 def stock_nonce(element, liste):
@@ -108,7 +111,6 @@ def stock_nonce(element, liste):
         liste.append(element)
     else:
         display.scroll("Duplicata")
-
 
 # Decrypt and unpack the packet received and return the fields value
 def unpack_data(encrypted_packet, key):
@@ -132,7 +134,6 @@ def unpack_data(encrypted_packet, key):
     message = vigenere(m[1], key, decryption=True)
     _unpacked = (type, int(lenght), message)
     return _unpacked
-
 
 # Unpack the packet, check the validity and return the type, length and content
 def receive_packet(packet_received, key):
@@ -163,7 +164,6 @@ def receive_packet(packet_received, key):
 
     return (type, lenght, message)
 
-
 # Calculate the challenge response
 def calculate_challenge_response(challenge, key):
     """
@@ -183,7 +183,6 @@ def calculate_challenge_response(challenge, key):
     else:
         sleep(200)
 
-
 def next_challenge(seed):
     """
     Cette fonction sert a calculer le resultat de la
@@ -193,7 +192,6 @@ def next_challenge(seed):
     random.seed(seed)
     value = random.randint(1, 1000)
     return value
-
 
 # Ask for a new connection with a micro:bit of the same group
 def establish_connexion_Parent(type, key):
@@ -213,16 +211,13 @@ def establish_connexion_Parent(type, key):
                 radio.send(tlv(type, vigenere(hash_key, key, decryption=False)))
                 return 1
     return 0
-
-
 def main():
     return True
 
 
-##########
-# PARENT #
-##########
-
+#############
+# CONNEXION #
+#############
 
 # Initialisation des variables
 key = "H"
@@ -292,32 +287,11 @@ while not connexion:
     else:
         sleep(200)
 
-# Dictionnaire des taux de change des devises - 08/11
-# Dictionnaire généré par l'API:
-# "Currencyapi"
+#################
+# COMMUNICATION #
+#################
 
-devises = {
-    "meta": {
-        "last_updated_at": "2024-11-07T23:59:59Z"
-    },
-    "data": {
-        "CAD": {
-            "code": "CAD",
-            "value": 105168.1281341745
-        },
-        "EUR": {
-            "code": "EUR",
-            "value": 70239.7648075961
-        },
-        "USD": {
-            "code": "USD",
-            "value": 75847.1329232132
-        }
-    }
-}
-
-
-# devises_new_values = {À REMPLIR} *À consulter nouvellement l'API en decembre pour pouvoir calculer l'appreciation du BTC
+#3.Fonctions Parent
 def set_amount():
     euros = 0
     add = True
@@ -558,9 +532,33 @@ def check_etat_eveil():
         else:
             sleep(200)
 
+#Variables globales
+# Dictionnaire des taux de change des devises - 08/11
+# Dictionnaire généré par l'API:
+# "Currencyapi"
 
+devises = {
+    "meta": {
+        "last_updated_at": "2024-11-07T23:59:59Z"
+    },
+    "data": {
+        "CAD": {
+            "code": "CAD",
+            "value": 105168.1281341745
+        },
+        "EUR": {
+            "code": "EUR",
+            "value": 70239.7648075961
+        },
+        "USD": {
+            "code": "USD",
+            "value": 75847.1329232132
+        }
+    }
+}
 cmpt_a = 0
 cmpt_b = 0
+
 communication = True
 while communication:
 

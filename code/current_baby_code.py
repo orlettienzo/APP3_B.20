@@ -1,12 +1,16 @@
+#1.Imports
 from microbit import *
 import radio
 import random
 import music
 
+##########################################################################################
 
-# Can be used to filter the communication, only the ones with the same parameters will receive messages
-# radio.config(group=23, channel=2, address=0x11111111)
-# default : channel=7 (0-83), address = 0x75626974, group = 0 (0-255)
+                                    ### ENFANT ###
+
+##########################################################################################
+
+#2.Fonctions Chiffrement
 def hashing(string):
     """
     Hachage d'une chaîne de caractères fournie en paramètre.
@@ -43,7 +47,6 @@ def hashing(string):
         return str(x)
     return ""
 
-
 def vigenere(message, key, decryption=False):
     text = ""
     key_length = len(key)
@@ -72,20 +75,18 @@ def vigenere(message, key, decryption=False):
             text += char
     return text
 
-
 def tlv(type, message):
     message = message.strip()
     nonce = random.randint(1, 1000)
+    if nonce not in nonce_lst:
+        nonce_lst.append(nonce)
     contenu = "{}:{}".format(nonce, message)
     lenght = len(contenu)
     _tlv = "{}|{}|{}".format(type, lenght, contenu)
     return _tlv
 
-
 def get_hash(string):
     return hashing(string)
-
-
 def send_packet(key, type, content):
     """
     Envoie de données fournie en paramètres
@@ -100,7 +101,6 @@ def send_packet(key, type, content):
     packet = tlv(type, vig_cont)
     radio.send(packet)
 
-
 # Fonction pour stocker les nonces dans la liste
 # (Liée à la fonction unpack_data() )
 def stock_nonce(element, liste):
@@ -108,7 +108,6 @@ def stock_nonce(element, liste):
         liste.append(element)
     else:
         display.scroll("Duplicata")
-
 
 # Decrypt and unpack the packet received and return the fields value
 def unpack_data(encrypted_packet, key):
@@ -161,7 +160,6 @@ def receive_packet(packet_received, key):
 
     return (type, lenght, message)
 
-
 # Calculate the challenge response
 def calculate_challenge_response(challenge, key):
     """
@@ -181,7 +179,6 @@ def calculate_challenge_response(challenge, key):
     else:
         sleep(200)
 
-
 def next_challenge(seed):
     """
     Cette fonction sert a calculer le resultat de la
@@ -191,7 +188,6 @@ def next_challenge(seed):
     random.seed(seed)
     value = random.randint(1, 1000)
     return value
-
 
 # Ask for a new connection with a micro:bit of the same group
 def establish_connexion_Enfant(type, key):
@@ -218,22 +214,18 @@ def establish_connexion_Enfant(type, key):
 
     return 0
 
-
 def send_confirmation():
     message = "ok"
     m = hashing(message)
     vig_m = vigenere(m, key, decryption=False)
-    to_send = tlv(type, vig_m)
+    to_send = tlv(1, vig_m)
     radio.send(to_send)
-
-
 def main():
     return True
 
-
-##########
-# ENFANT #
-##########
+#############
+# CONNEXION #
+#############
 
 # Initialisation des variables
 key = "H"
@@ -256,15 +248,15 @@ while not connexion:
     # Nonce aleatoire
     nonce = random.randint(1, 2000)
     nonce_str = str(nonce)
-    display.show("?")
+    display.show("?") #tant que la connexion n'est pas etablie
     type = 1
-    send_packet(key, type, nonce_str)
-    answer = False
+    send_packet(key, type, nonce_str) #envoi chiffre du challenge
+    answer = False #nous n'avons pas encore la reponse du Parent
     while not answer:
         m = radio.receive()
         if m:
-            send_confirmation()
-            u = unpack_data(m, key)
+            send_confirmation() #Nous venons de recevoir la reponse du Parent
+            u = unpack_data(m, key) #u = tuple(type, lenght, message déchiffré)
             if u != None:
                 racineRandom = int(u[2])  # racine random configuree
                 # radio.send(str(racineRandom))
@@ -272,32 +264,30 @@ while not connexion:
                 # Prochain challenge
                 challenge = next_challenge(racineRandom)
                 c = str(challenge)
-                hash_c = hashing(c)
+                hash_c = hashing(c) #hash du challenge
                 answer = False
                 while not answer:
                     m = radio.receive()
                     if m:
                         u = unpack_data(m, key)
                         if u != None:
-                            if u[2] == hash_c:
+                            if u[2] == hash_c: #comparaison avec hash locale
                                 send_confirmation()
                                 sleep(100)
                                 display.show(Image.HAPPY)
                                 # music.play(music.POWER_UP)
-                                final_key += c
+                                final_key += c #concatenation du mot de passe/ clé
                                 sleep(1500)
                                 answer = True
                 connexion = True
         else:
             sleep(200)
 
-# Variables globales
-sleeping = True
-calm = True
-milk_consumed = 0
+#################
+# COMMUNICATION #
+#################
 
-
-# Fonctions Enfant
+#3.Fonctions Enfant
 
 # Classe représentant le portefeuille numérique de l'enfant
 class DigitalWallet:
@@ -489,14 +479,19 @@ def show_milk(milk_consumed):
 def drink_milk(milk_consumed, dose):
     milk_consumed += dose
 
-
+# Variables globales
+sleeping = True
+calm = True
+milk_consumed = 0
+####################
 valeur_initiale = 0
 valeur_finale = 0
 cmpt_a = 0
 cmpt_b = 0
-# Boucle reservée à la communication entre les micros
+####################
 communication = True
-while communication:
+
+while communication: # Boucle reservée à la communication entre les micros
     show_image()
 
     # Si le bouton A est pressé, affiche la quantité
