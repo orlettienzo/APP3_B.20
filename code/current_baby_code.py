@@ -618,6 +618,7 @@ while communication:
                                 show_milk(str(milk_consumed))
                                 answer = True
                             else:
+                                send_confirmation()
                                 answer = True
 
             if tupla[2] == "etatEveil":
@@ -648,6 +649,7 @@ while communication:
 
     else:
         sleep(200)
+
 
 
 

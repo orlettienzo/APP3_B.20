@@ -585,10 +585,14 @@ while communication:
                             if m:
                                 tupla = unpack_data(m, final_key)
                                 if tupla != None:
-                                    display.scroll("{} ml".format(tupla[2]))
+                                    if int(tupla[2]) > 0:
+                                        display.scroll("{} ml".format(tupla[2]))
                                     a = True
-                        answer = True
+                                cmpt_a = 0
+                                answer = True
                     else:
+                        sleep(200)
+
                         sleep(200)
             cmpt_a = 0
 
