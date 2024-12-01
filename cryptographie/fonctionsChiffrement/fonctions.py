@@ -72,3 +72,48 @@ def tlv(type, message):
     lenght = len(contenu)
     _tlv = "{}|{}|{}".format(type, lenght, contenu)
     return _tlv
+
+#################
+# DEMONSTRATION #
+#################
+#key1 = "H4501"
+#key2 = "H5123"
+#key3 = "H4987"
+
+#oldkey1 = "HEISENBERG457"
+#oldkey2 = "HEISENBERG831"
+#oldkey3 = "HEISENBERG612"
+
+#message= "HEISENBERG" #message de longueur >= len(key)
+
+#vig1 = vigenere(message, key1)
+##vig2 = vigenere(message, key2)
+#vig3 = vigenere(message, key3)
+
+#vig4 = vigenere(message, oldkey1)
+#vig5 = vigenere(message, oldkey2)
+#vig6 = vigenere(message, oldkey3)
+
+#print("Nouveaux mots chiffres:")
+#print(vig1)
+#print(vig2)
+#print(vig3)
+#print("="*15)
+#print("Anciens mots chiffres:")
+#print(vig4)
+#print(vig5)
+#print(vig6)
+
+##########
+# OUTPUT #
+##########
+
+#Nouveaux mots chiffres:
+#ORWBOUOSAQ
+#OSSDQUPOCS
+#ORAJUUOWIW
+#===============
+#Anciens mots chiffres:
+#OIQKIACIIM
+#OIQKIACIIM
+#OIQKIACIIM

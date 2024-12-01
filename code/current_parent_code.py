@@ -225,7 +225,7 @@ def main():
 
 
 # Initialisation des variables
-key = "HEISENBERG"
+key = "H"
 hash_pass = hashing(key)
 radio.on()
 radio.config(channel=20)
