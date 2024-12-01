@@ -369,20 +369,23 @@ class DigitalWallet:
     def cash_out_btc(self):
         euros = self.solde * DigitalWallet.cotation_actuelle["data"]["EUR"]["value"]
         currentbtc = euros / DigitalWallet.cotation_actuelle["data"]["EUR"]["value"]
-        self.solde = 0
         return (euros, currentbtc)
 
     def show_valorisation(self):
         valeur_initiale = self.solde * DigitalWallet.ancienne_cotation["data"]["EUR"]["value"]
         valeur_finale = self.solde * DigitalWallet.cotation_actuelle["data"]["EUR"]["value"]
-        pourcentage = ((valeur_finale - valeur_initiale) / valeur_initiale) * 100
-        p = round(pourcentage, 1)
+        if valeur_initiale != 0:
+            pourcentage = ((valeur_finale - valeur_initiale) / valeur_initiale) * 100
+            p = round(pourcentage, 1)
+        else:
+            pourcentage = 0
+            p = 0.0
 
         currentbtc = valeur_finale / DigitalWallet.cotation_actuelle["data"]["EUR"]["value"]
 
-        display.scroll("{} EUR".format(valeur_finale))
+        display.scroll("{} EUR".format(round(valeur_finale, 2)))
         sleep(300)
-        display.scroll("{} BTC".format(currentbtc))
+        display.scroll("{} BTC".format(round(currentbtc, 4)))
         sleep(300)
         if int(p) > 0:
             sleep(100)
