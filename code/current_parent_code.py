@@ -628,6 +628,9 @@ while communication:
     if pin_logo.is_touched():
         check_etat_eveil()
 
+    if pin2.is_touched():
+        communication = False
+
     # Réception des messages via radio (version 1.0)
     message = radio.receive()
     if message:
@@ -674,4 +677,10 @@ while communication:
 
     else:
         sleep(200)
+
+
+supp = True
+while supp:
+    display.show(Image.HEART)
+    sleep(1000)
 

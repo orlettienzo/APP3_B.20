@@ -553,6 +553,10 @@ while communication: # Boucle reservée à la communication entre les micros
         else:
             sleep(200)
 
+
+    if pin2.is_touched():
+        communication = False
+
     # verification du niveau d'agitation (verison 1.0)
     niveau = check_agitation()
     if niveau == "agitation elevee":
@@ -647,6 +651,11 @@ while communication: # Boucle reservée à la communication entre les micros
 
     else:
         sleep(200)
+
+supp = True
+while supp:
+    display.show(Image.HEART)
+    sleep(1000)
 
 
 
