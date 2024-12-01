@@ -1,4 +1,4 @@
-#1.Imports
+# 1.Imports
 from microbit import *
 import radio
 import random
@@ -7,11 +7,11 @@ import music
 
 ##########################################################################################
 
-                                    ### PARENT ###
+### PARENT ###
 
 ##########################################################################################
 
-#2.Fonctions Chiffrement
+# 2.Fonctions Chiffrement
 def hashing(string):
     """
     Hachage d'une chaîne de caractères fournie en paramètre.
@@ -77,6 +77,7 @@ def vigenere(message, key, decryption=False):
             text += char
     return text
 
+
 def tlv(type, message):
     message = message.strip()
     nonce = random.randint(1, 1000)
@@ -87,8 +88,10 @@ def tlv(type, message):
     _tlv = "{}|{}|{}".format(type, lenght, contenu)
     return _tlv
 
+
 def get_hash(string):
     return hashing(string)
+
 
 def send_packet(key, type, content):
     """
@@ -104,6 +107,7 @@ def send_packet(key, type, content):
     packet = tlv(type, vig_cont)
     radio.send(packet)
 
+
 # Fonction pour stocker les nonces dans la liste
 # (Liée à la fonction unpack_data() )
 def stock_nonce(element, liste):
@@ -111,6 +115,7 @@ def stock_nonce(element, liste):
         liste.append(element)
     else:
         display.scroll("Duplicata")
+
 
 # Decrypt and unpack the packet received and return the fields value
 def unpack_data(encrypted_packet, key):
@@ -134,6 +139,7 @@ def unpack_data(encrypted_packet, key):
     message = vigenere(m[1], key, decryption=True)
     _unpacked = (type, int(lenght), message)
     return _unpacked
+
 
 # Unpack the packet, check the validity and return the type, length and content
 def receive_packet(packet_received, key):
@@ -164,6 +170,7 @@ def receive_packet(packet_received, key):
 
     return (type, lenght, message)
 
+
 # Calculate the challenge response
 def calculate_challenge_response(challenge, key):
     """
@@ -183,6 +190,7 @@ def calculate_challenge_response(challenge, key):
     else:
         sleep(200)
 
+
 def next_challenge(seed):
     """
     Cette fonction sert a calculer le resultat de la
@@ -192,6 +200,7 @@ def next_challenge(seed):
     random.seed(seed)
     value = random.randint(1, 1000)
     return value
+
 
 # Ask for a new connection with a micro:bit of the same group
 def establish_connexion_Parent(type, key):
@@ -211,6 +220,8 @@ def establish_connexion_Parent(type, key):
                 radio.send(tlv(type, vigenere(hash_key, key, decryption=False)))
                 return 1
     return 0
+
+
 def main():
     return True
 
@@ -287,11 +298,12 @@ while not connexion:
     else:
         sleep(200)
 
+
 #################
 # COMMUNICATION #
 #################
 
-#3.Fonctions Parent
+# 3.Fonctions Parent
 def set_amount():
     euros = 0
     add = True
@@ -532,7 +544,7 @@ def check_etat_eveil():
         else:
             sleep(200)
 
-#Variables globales
+# Variables globales
 # Dictionnaire des taux de change des devises - 08/11
 # Dictionnaire généré par l'API:
 # "Currencyapi"
@@ -677,7 +689,6 @@ while communication:
 
     else:
         sleep(200)
-
 
 supp = True
 while supp:

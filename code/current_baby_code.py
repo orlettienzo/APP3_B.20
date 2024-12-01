@@ -1,4 +1,4 @@
-#1.Imports
+# 1.Imports
 from microbit import *
 import radio
 import random
@@ -10,7 +10,7 @@ import music
 
 ##########################################################################################
 
-#2.Fonctions Chiffrement
+# 2.Fonctions Chiffrement
 def hashing(string):
     """
     Hachage d'une chaîne de caractères fournie en paramètre.
@@ -47,6 +47,7 @@ def hashing(string):
         return str(x)
     return ""
 
+
 def vigenere(message, key, decryption=False):
     text = ""
     key_length = len(key)
@@ -75,6 +76,7 @@ def vigenere(message, key, decryption=False):
             text += char
     return text
 
+
 def tlv(type, message):
     message = message.strip()
     nonce = random.randint(1, 1000)
@@ -85,8 +87,11 @@ def tlv(type, message):
     _tlv = "{}|{}|{}".format(type, lenght, contenu)
     return _tlv
 
+
 def get_hash(string):
     return hashing(string)
+
+
 def send_packet(key, type, content):
     """
     Envoie de données fournie en paramètres
@@ -101,6 +106,7 @@ def send_packet(key, type, content):
     packet = tlv(type, vig_cont)
     radio.send(packet)
 
+
 # Fonction pour stocker les nonces dans la liste
 # (Liée à la fonction unpack_data() )
 def stock_nonce(element, liste):
@@ -108,6 +114,7 @@ def stock_nonce(element, liste):
         liste.append(element)
     else:
         display.scroll("Duplicata")
+
 
 # Decrypt and unpack the packet received and return the fields value
 def unpack_data(encrypted_packet, key):
@@ -160,6 +167,7 @@ def receive_packet(packet_received, key):
 
     return (type, lenght, message)
 
+
 # Calculate the challenge response
 def calculate_challenge_response(challenge, key):
     """
@@ -179,6 +187,7 @@ def calculate_challenge_response(challenge, key):
     else:
         sleep(200)
 
+
 def next_challenge(seed):
     """
     Cette fonction sert a calculer le resultat de la
@@ -188,6 +197,7 @@ def next_challenge(seed):
     random.seed(seed)
     value = random.randint(1, 1000)
     return value
+
 
 # Ask for a new connection with a micro:bit of the same group
 def establish_connexion_Enfant(type, key):
@@ -214,14 +224,18 @@ def establish_connexion_Enfant(type, key):
 
     return 0
 
+
 def send_confirmation():
     message = "ok"
     m = hashing(message)
     vig_m = vigenere(m, key, decryption=False)
     to_send = tlv(1, vig_m)
     radio.send(to_send)
+
+
 def main():
     return True
+
 
 #############
 # CONNEXION #
@@ -248,15 +262,15 @@ while not connexion:
     # Nonce aleatoire
     nonce = random.randint(1, 2000)
     nonce_str = str(nonce)
-    display.show("?") #tant que la connexion n'est pas etablie
+    display.show("?")  # tant que la connexion n'est pas etablie
     type = 1
-    send_packet(key, type, nonce_str) #envoi chiffre du challenge
-    answer = False #nous n'avons pas encore la reponse du Parent
+    send_packet(key, type, nonce_str)  # envoi chiffre du challenge
+    answer = False  # nous n'avons pas encore la reponse du Parent
     while not answer:
         m = radio.receive()
         if m:
-            send_confirmation() #Nous venons de recevoir la reponse du Parent
-            u = unpack_data(m, key) #u = tuple(type, lenght, message déchiffré)
+            send_confirmation()  # Nous venons de recevoir la reponse du Parent
+            u = unpack_data(m, key)  # u = tuple(type, lenght, message déchiffré)
             if u != None:
                 racineRandom = int(u[2])  # racine random configuree
                 # radio.send(str(racineRandom))
@@ -264,30 +278,31 @@ while not connexion:
                 # Prochain challenge
                 challenge = next_challenge(racineRandom)
                 c = str(challenge)
-                hash_c = hashing(c) #hash du challenge
+                hash_c = hashing(c)  # hash du challenge
                 answer = False
                 while not answer:
                     m = radio.receive()
                     if m:
                         u = unpack_data(m, key)
                         if u != None:
-                            if u[2] == hash_c: #comparaison avec hash locale
+                            if u[2] == hash_c:  # comparaison avec hash locale
                                 send_confirmation()
                                 sleep(100)
                                 display.show(Image.HAPPY)
                                 # music.play(music.POWER_UP)
-                                final_key += c #concatenation du mot de passe/ clé
+                                final_key += c  # concatenation du mot de passe/ clé
                                 sleep(1500)
                                 answer = True
                 connexion = True
         else:
             sleep(200)
 
+
 #################
 # COMMUNICATION #
 #################
 
-#3.Fonctions Enfant
+# 3.Fonctions Enfant
 
 # Classe représentant le portefeuille numérique de l'enfant
 class DigitalWallet:
@@ -373,7 +388,13 @@ class DigitalWallet:
 
         currentbtc = valeur_finale / DigitalWallet.cotation_actuelle["data"]["EUR"]["value"]
 
-        display.scroll("{} EUR".format(round(valeur_finale, 2)))
+        display.scroll("Valorisation: ")
+        euros = valeur_finale - valeur_initiale
+        if euros > 0:
+            display.scroll("+ {} EUR".format(round(euros, 2)))
+        else:
+            display.scroll("- {} EUR".format(round(abs(euros), 2)))
+
         sleep(300)
         display.scroll("{} BTC".format(round(currentbtc, 4)))
         sleep(300)
@@ -479,6 +500,7 @@ def show_milk(milk_consumed):
 def drink_milk(milk_consumed, dose):
     milk_consumed += dose
 
+
 # Variables globales
 sleeping = True
 calm = True
@@ -491,7 +513,7 @@ cmpt_b = 0
 ####################
 communication = True
 
-while communication: # Boucle reservée à la communication entre les micros
+while communication:  # Boucle reservée à la communication entre les micros
     show_image()
 
     # Si le bouton A est pressé, affiche la quantité
@@ -539,20 +561,20 @@ while communication: # Boucle reservée à la communication entre les micros
             sleep(200)
 
     if button_a.is_pressed() and button_b.is_pressed():
-        sleep(1500)
+        sleep(1000)
         tupla = baby_wallet.cash_out_btc()
         if tupla != None:
             euros = tupla[0]
             btc = tupla[1]
+            display.scroll("Today: ")
             display.scroll("{} BTC".format(round(btc, 4)))
             sleep(100)
             # music.play(music.BA_DING)
-            display.scroll("{} EUR".format(euros))
+            display.scroll("{} EUR".format(round(euros, 2)))
             sleep(100)
             baby_wallet.show_valorisation()
         else:
             sleep(200)
-
 
     if pin2.is_touched():
         communication = False
@@ -631,8 +653,9 @@ while communication: # Boucle reservée à la communication entre les micros
                 parts = tupla[2].split("_")
                 valeur_initiale = parts[0]
                 btc = float(parts[1])
-                baby_wallet.receive(btc)
-                display.scroll("{} BTC".format(round(baby_wallet.solde, 4)))
+                if btc > 0.0:
+                    baby_wallet.receive(btc)
+                    display.scroll("{} BTC".format(round(baby_wallet.solde, 4)))
                 send_confirmation()
                 check = Image("00000:"
                               "00009:"
