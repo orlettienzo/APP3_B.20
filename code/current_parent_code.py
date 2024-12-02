@@ -9,7 +9,7 @@ import speech
 def call_function():
     def add():
         n = 0
-        limite = 4  # nombre de fonct.
+        limite = 5
         add = True
         time_to_stop = 2000
         while add:
@@ -43,7 +43,6 @@ def call_function():
                 while button_b.is_pressed():
                     temps_ecoule = running_time() - tempo_initial
                     if temps_ecoule >= time_to_stop:
-                        n -= 1
                         add = False
                         break
             if n < 10:
@@ -53,16 +52,15 @@ def call_function():
 
     value = add()
     if value == 1:
-        # get_milk_consumed()
         return "get_milk"
     elif value == 2:
-        # ask_temperature()
         return "ask_temperature"
     elif value == 3:
-        # send_btc(devises)
         return "send_btc"
     elif value == 4:
-        check_etat_eveil()
+        return "check_etat"
+    elif value == 5:
+        return "talk"
 
 
 def hashing(string):
@@ -583,7 +581,7 @@ while communication:
     if f == "check_etat":
         check_etat_eveil()
 
-    if pin0.is_touched():
+    if f == "talk":
         message = "hello"
         speech.say("Hello my son, how are you?")
         send_packet(final_key, 5, message)
@@ -641,4 +639,3 @@ while communication:
 
     else:
         sleep(200)
-
