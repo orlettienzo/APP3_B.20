@@ -221,6 +221,15 @@ def establish_connexion_Parent(type, key):
                 return 1
     return 0
 
+def create_nonce(lst):
+    if len(lst) == 5000:
+        lst = []
+    nonce = random.randint(5001,10000)
+    if nonce not in lst:
+        lst.append(nonce)
+        return nonce
+    else:
+        create_nonce(lst)
 
 def main():
     return True
@@ -243,16 +252,18 @@ m = radio.receive()
 final_key = ""
 final_key += key
 
-# Nonce aleatoire
-nonce = random.randint(2001, 4000)
-nonce_str = str(nonce)
-
 # Liste pour stocker les nonces
 nonce_lst = []
 
+# Nonce aleatoire
+nonce = create_nonce(nonce_lst)
+nonce_str = str(nonce)
+
+
+
 # Recuperer nonce + set seed
 while not connexion:
-    break
+    #break
     type = 1
     display.show("?")
     result = calculate_challenge_response(m, key)

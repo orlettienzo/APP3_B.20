@@ -224,6 +224,16 @@ def establish_connexion_Enfant(type, key):
 
     return 0
 
+def create_nonce(lst):
+    if len(lst) == 5000:
+        lst = []
+    nonce = random.randint(1,5000)
+    if nonce not in lst:
+        lst.append(nonce)
+        return nonce
+    else:
+        create_nonce(lst)
+
 
 def send_confirmation():
     message = "ok"
@@ -258,9 +268,10 @@ nonce_lst = []
 
 # Envoi du nonce chiffre au Parent
 while not connexion:
-    break
+    #break
     # Nonce aleatoire
-    nonce = random.randint(1, 2000)
+    #nonce = random.randint(1, 2000)
+    nonce = create_nonce(nonce_lst)
     nonce_str = str(nonce)
     display.show("?")  # tant que la connexion n'est pas etablie
     type = 1
@@ -567,9 +578,9 @@ while communication:  # Boucle reservée à la communication entre les micros
             euros = tupla[0]
             btc = tupla[1]
             display.scroll("Today: ")
-            display.scroll("{} BTC".format(round(btc, 4)))
+            display.scroll("{} BTC".format(round(btc, 7)))
             sleep(100)
-            # music.play(music.BA_DING)
+            music.play(music.BA_DING)
             display.scroll("{} EUR".format(round(euros, 2)))
             sleep(100)
             baby_wallet.show_valorisation()
@@ -655,7 +666,7 @@ while communication:  # Boucle reservée à la communication entre les micros
                 btc = float(parts[1])
                 if btc > 0.0:
                     baby_wallet.receive(btc)
-                    display.scroll("{} BTC".format(round(baby_wallet.solde, 4)))
+                    display.scroll("{} BTC".format(round(baby_wallet.solde, 7)))
                 send_confirmation()
                 check = Image("00000:"
                               "00009:"
