@@ -17,6 +17,9 @@ def call_function():
             if n > limite:
                 n = 1
 
+            if n < 10:
+                display.show("{}".format(n))
+
             if button_b.was_pressed():
                 n += 1
 
@@ -46,13 +49,12 @@ def call_function():
                         # n -= 1
                         add = False
                         break
-            if n < 10:
-                display.show("{}".format(n))
 
         return n
 
     value = add()
-    if value == 1:
+    value = value - 1
+    if value == 1 or value == 0:
         return "get_milk"
     elif value == 2:
         return "ask_temperature"
