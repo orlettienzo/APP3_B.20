@@ -35,6 +35,7 @@
   <img src="./images/en1.png" alt="Image en1" width="250" style="margin: 10px;">
   <img src="./images/en2.png" alt="Image en2" width="250" style="margin: 10px;">
   <img src="./images/en3.png" alt="Image en3" width="250" style="margin: 10px;">
+  <img src="./images/en4.png" alt="Image en3" width="250" style="margin: 10px;">
 </p>
 
 <h3 align="left">Micro:bit Parent</h3>
@@ -44,6 +45,9 @@
   <img src="./images/pa2.png" alt="Image pa2" width="250" style="margin: 10px;">
   <img src="./images/pa3.png" alt="Image pa3" width="250" style="margin: 10px;">
   <img src="./images/pa4.png" alt="Image pa4" width="250" style="margin: 10px;">
+  <img src="./images/pa5.png" alt="Image pa4" width="250" style="margin: 10px;">
+  <img src="./images/pa6.png" alt="Image pa4" width="250" style="margin: 10px;">
+  <img src="./images/pa7.png" alt="Image pa4" width="250" style="margin: 10px;">
 </p>
 <br>
 
