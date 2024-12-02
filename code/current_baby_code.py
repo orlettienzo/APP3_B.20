@@ -1,35 +1,13 @@
-# 1.Imports
+# Enfant
 from microbit import *
 import radio
 import random
 import music
+import speech
 
-##########################################################################################
 
-                                    ### ENFANT ###
-
-##########################################################################################
-
-# 2.Fonctions Chiffrement
 def hashing(string):
-    """
-    Hachage d'une chaîne de caractères fournie en paramètre.
-    Le résultat est une chaîne de caractères.
-    Attention : cette technique de hachage n'est pas suffisante (hachage dit cryptographique) pour une utilisation en dehors du cours.
-
-    :param (str) string: la chaîne de caractères à hacher
-    :return (str): le résultat du hachage
-    """
-
     def to_32(value):
-        """
-        Fonction interne utilisée par hashing.
-        Convertit une valeur en un entier signé de 32 bits.
-        Si 'value' est un entier plus grand que 2 ** 31, il sera tronqué.
-
-        :param (int) value: valeur du caractère transformé par la valeur de hachage de cette itération
-        :return (int): entier signé de 32 bits représentant 'value'
-        """
         value = value % (2 ** 32)
         if value >= 2 ** 31:
             value = value - 2 ** 32
@@ -55,17 +33,14 @@ def vigenere(message, key, decryption=False):
 
     for i, char in enumerate(str(message)):
         key_index = i % key_length
-        # Letters encryption/decryption
         if char.isalpha():
             if decryption:
                 modified_char = chr((ord(char.upper()) - key_as_int[key_index] + 26) % 26 + ord('A'))
             else:
                 modified_char = chr((ord(char.upper()) + key_as_int[key_index] - 26) % 26 + ord('A'))
-            # Put back in lower case if it was
             if char.islower():
                 modified_char = modified_char.lower()
             text += modified_char
-        # Digits encryption/decryption
         elif char.isdigit():
             if decryption:
                 modified_char = str((int(char) - key_as_int[key_index]) % 10)
@@ -88,27 +63,12 @@ def tlv(type, message):
     return _tlv
 
 
-def get_hash(string):
-    return hashing(string)
-
-
 def send_packet(key, type, content):
-    """
-    Envoie de données fournie en paramètres
-    Cette fonction permet de construire, de chiffrer puis d'envoyer un paquet via l'interface radio du micro:bit
-
-    :param (str) key:       Clé de chiffrement
-           (str) type:      Type du paquet à envoyer
-           (str) content:   Données à envoyer
-	:return none
-    """
     vig_cont = vigenere(content, key, decryption=False)
     packet = tlv(type, vig_cont)
     radio.send(packet)
 
 
-# Fonction pour stocker les nonces dans la liste
-# (Liée à la fonction unpack_data() )
 def stock_nonce(element, liste):
     if element not in liste:
         liste.append(element)
@@ -116,18 +76,7 @@ def stock_nonce(element, liste):
         display.scroll("Duplicata")
 
 
-# Decrypt and unpack the packet received and return the fields value
 def unpack_data(encrypted_packet, key):
-    """
-    Déballe et déchiffre les paquets reçus via l'interface radio du micro:bit
-    Cette fonction renvoit les différents champs du message passé en paramètre
-
-    :param (str) encrypted_packet: Paquet reçu
-           (str) key:              Clé de chiffrement
-	:return (srt)type:             Type de paquet
-            (int)lenght:           Longueur de la donnée en caractères
-            (str) message:         Données reçues
-    """
     if encrypted_packet != None:
         parts = encrypted_packet.split("|")
         m = parts[2].split(":")
@@ -138,19 +87,7 @@ def unpack_data(encrypted_packet, key):
         return _unpacked
 
 
-# Unpack the packet, check the validity and return the type, length and content
 def receive_packet(packet_received, key):
-    """
-    Traite les paquets reçue via l'interface radio du micro:bit
-    Cette fonction permet de construire, de chiffrer puis d'envoyer un paquet via l'interface radio du micro:bit
-    Si une erreur survient, les 3 champs sont retournés vides
-
-    :param (str) packet_received: Paquet reçue
-           (str) key:              Clé de chiffrement
-	:return (srt)type:             Type de paquet
-            (int)lenght:           Longueur de la donnée en caractère
-            (str) message:         Données reçue
-    """
     if packet_received == None:
         type = None
         lenght = None
@@ -168,14 +105,7 @@ def receive_packet(packet_received, key):
     return (type, lenght, message)
 
 
-# Calculate the challenge response
 def calculate_challenge_response(challenge, key):
-    """
-    Calcule la réponse au challenge initial de connection avec l'autre micro:bit
-
-    :param (str) challenge:            Challenge reçu
-	:return (srt)challenge_response:   Réponse au challenge
-    """
     m = radio.receive()
     if m:
         parts = m.split("|")
@@ -189,25 +119,13 @@ def calculate_challenge_response(challenge, key):
 
 
 def next_challenge(seed):
-    """
-    Cette fonction sert a calculer le resultat de la
-    fonction random avec la racine reçue
-    """
     seed = int(seed)
     random.seed(seed)
     value = random.randint(1, 1000)
     return value
 
 
-# Ask for a new connection with a micro:bit of the same group
 def establish_connexion_Enfant(type, key):
-    """
-    Etablissement de la connexion avec l'autre micro:bit
-    Si il y a une erreur, la valeur de retour est vide
-
-    :param (str) key:                  Clé de chiffrement
-	:return (srt)challenge_response:   Réponse au challenge
-    """
     hash_key = hashing(key)
     vig_hash_key = vigenere(hash_key, key, decryption=False)
     radio.send(tlv(type, vig_hash_key))
@@ -224,10 +142,11 @@ def establish_connexion_Enfant(type, key):
 
     return 0
 
+
 def create_nonce(lst):
     if len(lst) == 5000:
         lst = []
-    nonce = random.randint(1,5000)
+    nonce = random.randint(1, 5000)
     if nonce not in lst:
         lst.append(nonce)
         return nonce
@@ -247,11 +166,6 @@ def main():
     return True
 
 
-#############
-# CONNEXION #
-#############
-
-# Initialisation des variables
 key = "H"
 hash_pass = hashing(key)
 radio.on()
@@ -263,45 +177,38 @@ m = radio.receive()
 final_key = ""
 final_key += key
 
-# Liste pour stocker les nonces
 nonce_lst = []
 
-
-# Envoi du nonce chiffre au Parent
 while not connexion:
     break
-    # Nonce aleatoire
     nonce = create_nonce(nonce_lst)
     nonce_str = str(nonce)
-    display.show("?")  # tant que la connexion n'est pas etablie
+    display.show("?")
     type = 1
-    send_packet(key, type, nonce_str)  # envoi chiffre du challenge
-    answer = False  # nous n'avons pas encore la reponse du Parent
+    send_packet(key, type, nonce_str)
+    answer = False
     while not answer:
         m = radio.receive()
         if m:
-            send_confirmation()  # Nous venons de recevoir la reponse du Parent
-            u = unpack_data(m, key)  # u = tuple(type, lenght, message déchiffré)
+            send_confirmation()
+            u = unpack_data(m, key)
             if u != None:
-                racineRandom = int(u[2])  # racine random configuree
-                # radio.send(str(racineRandom))
-
-                # Prochain challenge
+                racineRandom = int(u[2])
                 challenge = next_challenge(racineRandom)
                 c = str(challenge)
-                hash_c = hashing(c)  # hash du challenge
+                hash_c = hashing(c)
                 answer = False
                 while not answer:
                     m = radio.receive()
                     if m:
                         u = unpack_data(m, key)
                         if u != None:
-                            if u[2] == hash_c:  # comparaison avec hash locale
+                            if u[2] == hash_c:
                                 send_confirmation()
                                 sleep(100)
                                 display.show(Image.HAPPY)
                                 music.play(music.POWER_UP)
-                                final_key += c  # concatenation du mot de passe/ clé
+                                final_key += c
                                 sleep(1500)
                                 answer = True
                 connexion = True
@@ -309,13 +216,6 @@ while not connexion:
             sleep(200)
 
 
-#################
-# COMMUNICATION #
-#################
-
-# 3.Fonctions Enfant
-
-# Classe représentant le portefeuille numérique de l'enfant
 class DigitalWallet:
     ancienne_cotation = {
         "meta": {
@@ -443,7 +343,6 @@ class DigitalWallet:
             sleep(1000)
 
 
-# Initialisation du portefeuille
 baby_wallet = DigitalWallet('Micro Enfant', 'BE00 0001')
 
 
@@ -456,14 +355,12 @@ def show_image():
     display.show(baby_image)
 
 
-# Fonction pour rassurer le parent
 def rassurer_parent():
     message = "calm"
     vig_m = vigenere(message, final_key, decryption=False)
-    radio.send(tlv(2, vig_m))  # CHIFFREE
+    radio.send(tlv(2, vig_m))
 
 
-# Fonction pour vérifier le niveau d'agitation
 def check_agitation():
     agitation = accelerometer.get_strength()
     if agitation < 1000:
@@ -474,19 +371,16 @@ def check_agitation():
         return "agitation elevee"
 
 
-# Fonction pour envoyer un message sur l'agitation
 def send_agitation(type=2, agitation=None):
     vig_m = vigenere(agitation, final_key, decryption=False)
-    radio.send(tlv(type, vig_m))  # CHIFFREE
+    radio.send(tlv(type, vig_m))
 
 
-# Fonction pour envoyer un message si l'enfant est en chute libre
 def send_freefall(type=2, mouvement="freefall"):
     vig_m = vigenere(mouvement, final_key, decryption=False)
     radio.send(tlv(type, vig_m))
 
 
-# Fonction pour verifier la temperature
 def get_temperature():
     temp = str(temperature())
     return temp
@@ -496,39 +390,32 @@ def show_temperature():
     display.scroll("{} C".format(temperature()))
 
 
-# Fonction pour envoyer un message sur la temperature
 def send_temperature(temp, type=4):
     vig_temp = vigenere(str(temp), final_key, decryption=False)
-    radio.send(tlv(type, vig_temp))  # CHIFFREE
+    radio.send(tlv(type, vig_temp))
 
 
-# Fonction pour afficher la quantité de lait consommée
 def show_milk(milk_consumed):
     display.scroll(str(milk_consumed) + " ml")
 
 
-# Gestion de la consommation de lait
 def drink_milk(milk_consumed, dose):
     milk_consumed += dose
 
 
-# Variables globales
 sleeping = True
 calm = True
 milk_consumed = 0
-####################
+
 valeur_initiale = 0
 valeur_finale = 0
 cmpt_a = 0
 cmpt_b = 0
-####################
+
 communication = True
 
-while communication:  # Boucle reservée à la communication entre les micros
+while communication:
     show_image()
-
-    # Si le bouton A est pressé, affiche la quantité
-    # de lait consommée
     if button_a.is_pressed() and button_b.is_pressed() == False:
         cmpt_a += 1
         if cmpt_a >= 1:
@@ -537,16 +424,12 @@ while communication:  # Boucle reservée à la communication entre les micros
         else:
             sleep(200)
 
-    # Vérifie les mouvements avec l'accéléromètre
     movement = accelerometer.current_gesture()
-
-    # Vérifie si l'enfant est en chute libre
     if movement == "freefall":
         send_freefall()
         sleeping = False
         calm = False
         display.show(Image.SAD)
-        # ci-dessous on va verifier si les parents se rapprochent de lui (version 1.0)
         while not calm:
             message = "ping"
             send_packet(final_key, 2, message)
@@ -587,10 +470,6 @@ while communication:  # Boucle reservée à la communication entre les micros
         else:
             sleep(200)
 
-    if pin2.is_touched():
-        communication = False
-
-    # verification du niveau d'agitation (verison 1.0)
     niveau = check_agitation()
     if niveau == "agitation elevee":
         send_agitation(2, niveau)
@@ -609,7 +488,6 @@ while communication:  # Boucle reservée à la communication entre les micros
             sleep(1000)
             calm = True
 
-    # Réception des messages via radio (version 1.0)
     message = radio.receive()
     if message:
         tupla = unpack_data(message, final_key)
@@ -660,6 +538,12 @@ while communication:  # Boucle reservée à la communication entre les micros
                 etat = check_agitation()
                 send_packet(final_key, 1, etat)
 
+            if tupla[2] == "hello":
+                display.show(Image.HAPPY)
+                speech.say("I am good")
+                sleep(2000)
+                send_confirmation()
+
             if tupla[2][-3:] == "btc":
                 parts = tupla[2].split("_")
                 valeur_initiale = parts[0]
@@ -685,12 +569,3 @@ while communication:  # Boucle reservée à la communication entre les micros
 
     else:
         sleep(200)
-
-supp = True
-while supp:
-    display.show(Image.HEART)
-    sleep(1000)
-
-
-
-
