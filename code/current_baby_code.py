@@ -460,6 +460,8 @@ while communication:
         if tupla != None:
             euros = tupla[0]
             btc = tupla[1]
+            display.show(Image.ALL_CLOCKS)
+            sleep(100)
             display.scroll("Today : ")
             display.scroll("{} BTC".format(round(btc, 7)))
             sleep(100)
