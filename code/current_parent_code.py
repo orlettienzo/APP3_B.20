@@ -80,7 +80,7 @@ def vigenere(message, key, decryption=False):
 
 def tlv(type, message):
     message = message.strip()
-    nonce = random.randint(1, 1000)
+    nonce = create_nonce(nonce_lst)
     if nonce not in nonce_lst:
         nonce_lst.append(nonce)
     contenu = "{}:{}".format(nonce, message)
@@ -221,15 +221,17 @@ def establish_connexion_Parent(type, key):
                 return 1
     return 0
 
+
 def create_nonce(lst):
     if len(lst) == 5000:
         lst = []
-    nonce = random.randint(5001,10000)
+    nonce = random.randint(5001, 10000)
     if nonce not in lst:
         lst.append(nonce)
         return nonce
     else:
         create_nonce(lst)
+
 
 def main():
     return True
@@ -259,11 +261,9 @@ nonce_lst = []
 nonce = create_nonce(nonce_lst)
 nonce_str = str(nonce)
 
-
-
 # Recuperer nonce + set seed
 while not connexion:
-    #break
+    break
     type = 1
     display.show("?")
     result = calculate_challenge_response(m, key)
@@ -322,7 +322,7 @@ def set_amount():
     while add:
 
         if euros < 10:
-            display.show("{}".format(euros))
+            display.show("{} EUR".format(euros))
 
         if button_b.was_pressed():
             euros += 100
@@ -374,6 +374,7 @@ def send_btc(devises):
     btc = amount / current_btc
     message = str(amount) + "_" + str(btc) + "_" + "btc"
     send_packet(final_key, 4, message)
+    display.scroll("<- BTC")
     answer = False
     while not answer:
         message = radio.receive()
@@ -385,7 +386,7 @@ def send_btc(devises):
                           "09000:")
 
             display.show(check)
-            # music.play(music.BA_DING)
+            music.play(music.BA_DING)
             sleep(1500)
             answer = True
         else:
@@ -554,6 +555,7 @@ def check_etat_eveil():
                 sleep(200)
         else:
             sleep(200)
+
 
 # Variables globales
 # Dictionnaire des taux de change des devises - 08/11

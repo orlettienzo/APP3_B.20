@@ -79,7 +79,7 @@ def vigenere(message, key, decryption=False):
 
 def tlv(type, message):
     message = message.strip()
-    nonce = random.randint(1, 1000)
+    nonce = create_nonce(nonce_lst)
     if nonce not in nonce_lst:
         nonce_lst.append(nonce)
     contenu = "{}:{}".format(nonce, message)
@@ -266,11 +266,11 @@ final_key += key
 # Liste pour stocker les nonces
 nonce_lst = []
 
+
 # Envoi du nonce chiffre au Parent
 while not connexion:
-    #break
+    break
     # Nonce aleatoire
-    #nonce = random.randint(1, 2000)
     nonce = create_nonce(nonce_lst)
     nonce_str = str(nonce)
     display.show("?")  # tant que la connexion n'est pas etablie
@@ -300,7 +300,7 @@ while not connexion:
                                 send_confirmation()
                                 sleep(100)
                                 display.show(Image.HAPPY)
-                                # music.play(music.POWER_UP)
+                                music.play(music.POWER_UP)
                                 final_key += c  # concatenation du mot de passe/ clé
                                 sleep(1500)
                                 answer = True
@@ -399,7 +399,7 @@ class DigitalWallet:
 
         currentbtc = valeur_finale / DigitalWallet.cotation_actuelle["data"]["EUR"]["value"]
 
-        display.scroll("Valorisation: ")
+        display.scroll("Val : ")
         euros = valeur_finale - valeur_initiale
         if euros > 0:
             display.scroll("+ {} EUR".format(round(euros, 2)))
@@ -407,7 +407,7 @@ class DigitalWallet:
             display.scroll("- {} EUR".format(round(abs(euros), 2)))
 
         sleep(300)
-        display.scroll("{} BTC".format(round(currentbtc, 4)))
+        display.scroll("{} BTC".format(round(currentbtc, 7)))
         sleep(300)
         if int(p) > 0:
             sleep(100)
@@ -577,7 +577,7 @@ while communication:  # Boucle reservée à la communication entre les micros
         if tupla != None:
             euros = tupla[0]
             btc = tupla[1]
-            display.scroll("Today: ")
+            display.scroll("Today : ")
             display.scroll("{} BTC".format(round(btc, 7)))
             sleep(100)
             music.play(music.BA_DING)
@@ -675,7 +675,7 @@ while communication:  # Boucle reservée à la communication entre les micros
                               "09000:")
 
                 display.show(check)
-                # music.play(music.BA_DING)
+                music.play(music.BA_DING)
                 sleep(1500)
 
 
