@@ -9,7 +9,7 @@ import speech
 def call_function():
     def add():
         n = 0
-        limite = 5
+        limite = 6
         add = True
         time_to_stop = 2000
         while add:
@@ -43,6 +43,7 @@ def call_function():
                 while button_b.is_pressed():
                     temps_ecoule = running_time() - tempo_initial
                     if temps_ecoule >= time_to_stop:
+                        # n -= 1
                         add = False
                         break
             if n < 10:
@@ -61,6 +62,8 @@ def call_function():
         return "check_etat"
     elif value == 5:
         return "talk"
+    elif value == 6:
+        return "make_baby_sleep"
 
 
 def hashing(string):
@@ -594,6 +597,29 @@ while communication:
                 answer = True
             else:
                 sleep(200)
+
+    if f == "make_baby_sleep":
+        display.clear()
+        message = "sleep"
+        speech.say("It is time to go to bed")
+        send_packet(final_key, 6, message)
+        answer = False
+        while not answer:
+            m = radio.receive()
+            if m:
+                answer = True
+            else:
+                sleep(200)
+        asleep = False
+        while not asleep:
+            m = radio.receive()
+            if m:
+                asleep = True
+            else:
+                if button_b.was_pressed():
+                    send_packet(final_key, 6, "1")
+                elif button_a.was_pressed():
+                    send_packet(final_key, 6, "-1")
 
     message = radio.receive()
     if message:

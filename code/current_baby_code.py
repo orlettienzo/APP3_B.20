@@ -546,6 +546,42 @@ while communication:
                 sleep(2000)
                 send_confirmation()
 
+            if tupla[2] == "sleep":
+                brightness = 7
+                for x in range(5):
+                    for y in range(5):
+                        display.set_pixel(x, y, brightness)
+                asleep = False
+                c = 0
+                while not asleep:
+                    c += 1
+                    if c == 1:
+                        send_packet(final_key, 6, "set_light")
+
+                    m = radio.receive()
+                    if m:
+                        tupla = unpack_data(m, final_key)
+                        if tupla is not None:
+                            try:
+                                value = int(tupla[2])
+                                if value > 0:
+                                    brightness = min(brightness + value, 9)
+                                elif value < 0:
+                                    brightness = max(brightness + value, 0)
+
+                                for x in range(5):
+                                    for y in range(5):
+                                        display.set_pixel(x, y, brightness)
+
+                                if brightness == 0:
+                                    asleep = True
+                                    display.show(Image.ASLEEP)
+                                    sleep(1200)
+                                    display.scroll(" zZzZ")
+                                    send_confirmation()
+                            except ValueError:
+                                pass
+
             if tupla[2][-3:] == "btc":
                 parts = tupla[2].split("_")
                 valeur_initiale = parts[0]
