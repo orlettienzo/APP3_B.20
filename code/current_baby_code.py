@@ -600,13 +600,23 @@ while communication:
                         if direction < 45 or direction >= 315:
                             send_packet(final_key, 7, "N")
                         elif direction < 135:
-                            send_packet(final_key, 7, "E")  # Leste
+                            send_packet(final_key, 7, "E")
                         elif direction < 225:
-                            send_packet(final_key, 7, "S")  # Sul
+                            send_packet(final_key, 7, "S")
                         else:
-                            send_packet(final_key, 7, "O")  # Oeste
+                            send_packet(final_key, 7, "O")
 
                     sleep(300)
+
+            if tupla[2] == "distance":
+                display.clear()
+                finish = False
+                while not finish:
+                    send_packet(final_key, 8, "ping")
+                    sleep(500)
+                    m = radio.receive()
+                    if m:
+                        finish = True
 
             if tupla[2][-3:] == "btc":
                 parts = tupla[2].split("_")

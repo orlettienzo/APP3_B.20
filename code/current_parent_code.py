@@ -9,7 +9,7 @@ import speech
 def call_function():
     def add():
         n = 0
-        limite = 7
+        limite = 8
         add = True
         time_to_stop = 2000
         while add:
@@ -26,29 +26,13 @@ def call_function():
             elif button_a.was_pressed():
                 if n >= 1:
                     n -= 1
+                if n == 0:
+                    n = 8
                 else:
                     pass
 
-
-            elif button_a.is_pressed():
-                tempo_initial = running_time()
-
-                while button_a.is_pressed():
-                    temps_ecoule = running_time() - tempo_initial
-
-                    if temps_ecoule >= time_to_stop:
-                        n = 0
-                        break
-
-            elif button_b.is_pressed():
-                display.clear()
-                tempo_initial = running_time()
-                while button_b.is_pressed():
-                    temps_ecoule = running_time() - tempo_initial
-                    if temps_ecoule >= time_to_stop:
-                        # n -= 1
-                        add = False
-                        break
+            elif pin_logo.is_touched():
+                add = False
 
         return n
 
@@ -69,6 +53,8 @@ def call_function():
         return "make_baby_sleep"
     elif value == 7:
         return "get_baby_direction"
+    elif value == 8:
+        return "get_baby_distance"
 
 
 def hashing(string):
@@ -641,6 +627,44 @@ while communication:
                 tupla = unpack_data(m, final_key)
                 if tupla != None:
                     display.show("{}".format(tupla[2]))
+                    if tupla[2] == "N":
+                        sleep(1000)
+                        display.show(Image.ARROW_N)
+                    if tupla[2] == "S":
+                        sleep(1000)
+                        display.show(Image.ARROW_S)
+                    if tupla[2] == "E":
+                        sleep(1000)
+                        display.show(Image.ARROW_E)
+                    if tupla[2] == "O":
+                        sleep(1000)
+                        display.show(Image.ARROW_W)
+
+    if f == "get_baby_distance":
+        send_packet(final_key, 8, "distance")
+        display.clear()
+        while True:
+            if button_a.was_pressed():
+                send_packet(final_key, 8, "finish")
+                break
+
+            m = radio.receive_full()
+            if m:
+                _, ping, _ = m
+                if ping > -30:
+                    display.show(Image.HEART)
+                    sleep(200)
+                elif -50 <= ping <= -30:
+                    display.show(Image.HAPPY)
+                    sleep(200)
+                elif -70 <= ping < -50:
+                    display.show(Image.MEH)
+                    sleep(200)
+                elif -120 <= ping < -70:
+                    display.show(Image.CONFUSED)
+                    sleep(200)
+                else:
+                    display.show(Image.SAD)
 
     message = radio.receive()
     if message:
