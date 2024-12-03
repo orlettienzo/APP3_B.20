@@ -9,13 +9,13 @@ import speech
 def call_function():
     def add():
         n = 0
-        limite = 6
+        limite = 7
         add = True
         time_to_stop = 2000
         while add:
 
             if n > limite:
-                n = 1
+                n = 0
 
             if n < 10:
                 display.show("{}".format(n))
@@ -53,8 +53,9 @@ def call_function():
         return n
 
     value = add()
-    value = value - 1
-    if value == 1 or value == 0:
+    if value == 0:
+        pass
+    if value == 1:
         return "get_milk"
     elif value == 2:
         return "ask_temperature"
@@ -66,6 +67,8 @@ def call_function():
         return "talk"
     elif value == 6:
         return "make_baby_sleep"
+    elif value == 7:
+        return "get_baby_direction"
 
 
 def hashing(string):
@@ -622,6 +625,22 @@ while communication:
                     send_packet(final_key, 6, "1")
                 elif button_a.was_pressed():
                     send_packet(final_key, 6, "-1")
+
+    if f == "get_baby_direction":
+        display.clear()
+        message = "direction"
+        send_packet(final_key, 7, message)
+        suivre_enfant = True
+        while suivre_enfant:
+            if button_a.was_pressed():
+                send_packet(final_key, 7, "finish")
+                suivre_enfant = False
+
+            m = radio.receive()
+            if m:
+                tupla = unpack_data(m, final_key)
+                if tupla != None:
+                    display.show("{}".format(tupla[2]))
 
     message = radio.receive()
     if message:

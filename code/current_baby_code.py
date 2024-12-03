@@ -403,6 +403,9 @@ def drink_milk(milk_consumed, dose):
     milk_consumed += dose
 
 
+if not compass.is_calibrated():
+    compass.calibrate()
+
 sleeping = True
 calm = True
 milk_consumed = 0
@@ -581,6 +584,29 @@ while communication:
                                     send_confirmation()
                             except ValueError:
                                 pass
+
+            if tupla[2] == "direction":
+                sending_drection = True
+                while sending_drection:
+                    display.clear()
+                    direction = compass.heading()
+                    m = radio.receive()
+
+                    if m:
+                        sending_drection = False
+
+                    else:
+
+                        if direction < 45 or direction >= 315:
+                            send_packet(final_key, 7, "N")
+                        elif direction < 135:
+                            send_packet(final_key, 7, "E")  # Leste
+                        elif direction < 225:
+                            send_packet(final_key, 7, "S")  # Sul
+                        else:
+                            send_packet(final_key, 7, "O")  # Oeste
+
+                    sleep(300)
 
             if tupla[2][-3:] == "btc":
                 parts = tupla[2].split("_")
