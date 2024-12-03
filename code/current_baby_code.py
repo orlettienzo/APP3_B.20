@@ -409,6 +409,7 @@ if not compass.is_calibrated():
 sleeping = True
 calm = True
 milk_consumed = 0
+daily_goal = 500
 
 valeur_initiale = 0
 valeur_finale = 0
@@ -540,8 +541,30 @@ while communication:
                                 answer = True
 
             if tupla[2] == "etatEveil":
+                if sleeping:
+                    send_packet(final_key, 1, "sleeping")
+                else:
+                    send_packet(final_key, 1, "awake")
+                a1 = False
+                while not a1:
+                    m = radio.receive()
+                    if m:
+                        a1 = True
+                    else:
+                        sleep(200)
+                sleep(200)
                 etat = check_agitation()
                 send_packet(final_key, 1, etat)
+                a2 = False
+                while not a2:
+                    m = radio.receive()
+                    if m:
+                        a2 = True
+                    else:
+                        sleep(200)
+                sleep(200)
+                if milk_consumed < daily_goal:
+                    send_packet(final_key, 2, str(daily_goal - milk_consumed))
 
             if tupla[2] == "hello":
                 display.show(Image.HAPPY)

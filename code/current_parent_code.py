@@ -472,15 +472,65 @@ def send_milk_dose(dose, type=3):
 def check_etat_eveil():
     message = "etatEveil"
     send_packet(final_key, 1, message)
-    answer = False
-    while not answer:
+    answer1 = False
+    while not answer1:
         m = radio.receive()
         if m:
             tupla = unpack_data(m, final_key)
             if tupla != None:
                 etat = tupla[2]
-                display.scroll("{}".format(etat))
-                answer = True
+                if etat == "sleeping":
+                    display.show(Image.ASLEEP)
+                    sleep(1000)
+                    answer1 = True
+
+                else:
+                    display.show(Image.SURPRISED)
+                    sleep(1000)
+                    answer1 = True
+
+            else:
+                sleep(200)
+        else:
+            sleep(200)
+    sleep(1500)
+    send_packet(final_key, 1, "next")
+    answer2 = False
+    while not answer2:
+        m = radio.receive()
+        if m:
+            tupla = unpack_data(m, final_key)
+            if tupla != None:
+                niveau = tupla[2]
+                if niveau == "agitation faible":
+                    display.show(Image.ARROW_SE)
+                    sleep(1200)
+                    answer2 = True
+                if niveau == "agitation moyenne":
+                    display.show(Image.ARROW_E)
+                    sleep(1200)
+                    answer2 = True
+                if niveau == "agitation elevee":
+                    display.show(Image.ARROW_NE)
+                    sleep(1200)
+                    answer2 = True
+            else:
+                sleep(200)
+        else:
+            sleep(200)
+    sleep(1500)
+    send_packet(final_key, 1, "next")
+    answer3 = False
+    while not answer3:
+        m = radio.receive()
+        if m:
+            tupla = unpack_data(m, final_key)
+            if tupla != None:
+                if int(tupla[2]) > 0:
+                    display.show(Image.SAD)
+                    sleep(1200)
+                    display.scroll("It last {} ml".format(tupla[2]))
+                    answer3 = True
             else:
                 sleep(200)
         else:
