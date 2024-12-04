@@ -45,9 +45,11 @@
   <img src="./images/pa2.png" alt="Image pa2" width="250" style="margin: 10px;">
   <img src="./images/pa3.png" alt="Image pa3" width="250" style="margin: 10px;">
   <img src="./images/pa4.png" alt="Image pa4" width="250" style="margin: 10px;">
-  <img src="./images/pa5.png" alt="Image pa4" width="250" style="margin: 10px;">
-  <img src="./images/pa6.png" alt="Image pa4" width="250" style="margin: 10px;">
-  <img src="./images/pa7.png" alt="Image pa4" width="250" style="margin: 10px;">
+  <img src="./images/pa5.png" alt="Image pa5" width="250" style="margin: 10px;">
+  <img src="./images/pa6.png" alt="Image pa6" width="250" style="margin: 10px;">
+  <img src="./images/pa7.png" alt="Image pa7" width="250" style="margin: 10px;">
+  <img src="./images/pa8.png" alt="Image pa8" width="250" style="margin: 10px;">
+  <img src="./images/pa9.png" alt="Image pa9" width="250" style="margin: 10px;">
 </p>
 <br>
 
