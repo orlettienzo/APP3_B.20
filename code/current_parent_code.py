@@ -225,7 +225,6 @@ nonce = create_nonce(nonce_lst)
 nonce_str = str(nonce)
 
 while not connexion:
-    break
     type = 1
     display.show("?")
     result = calculate_challenge_response(m, key)
@@ -527,6 +526,10 @@ def check_etat_eveil():
                     display.show(Image.SAD)
                     sleep(1200)
                     display.scroll("It last {} ml".format(tupla[2]))
+                    answer3 = True
+                elif int(tupla[2]) <= 0:
+                    display.show(Image.HAPPY)
+                    sleep(1200)
                     answer3 = True
             else:
                 sleep(200)

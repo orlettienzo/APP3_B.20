@@ -180,7 +180,6 @@ final_key += key
 nonce_lst = []
 
 while not connexion:
-    break
     nonce = create_nonce(nonce_lst)
     nonce_str = str(nonce)
     display.show("?")
@@ -561,8 +560,7 @@ while communication:
                     else:
                         sleep(200)
                 sleep(200)
-                if milk_consumed < daily_goal:
-                    send_packet(final_key, 2, str(daily_goal - milk_consumed))
+                send_packet(final_key, 2, str(daily_goal - milk_consumed))
 
             if tupla[2] == "hello":
                 display.show(Image.HAPPY)
@@ -619,7 +617,7 @@ while communication:
                         sleep(1500)
                         break
 
-                    if light_level > 100:
+                    if light_level > 200:
                         display.show(Image.SAD)
                         music.play(music.BA_DING)
                         send_packet(final_key, 1, "awake")
