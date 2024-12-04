@@ -43,6 +43,7 @@
   <img src="./images/pa0.png" alt="Image pa0" width="250" style="margin: 10px;">
   <img src="./images/pa1.png" alt="Image pa1" width="250" style="margin: 10px;">
   <img src="./images/pa2.png" alt="Image pa2" width="250" style="margin: 10px;">
+  <img src="./images/pa_menu.png" alt="Image pa_menu" width="250" style="margin: 10px;">
   <img src="./images/pa3.png" alt="Image pa3" width="250" style="margin: 10px;">
   <img src="./images/pa4.png" alt="Image pa4" width="250" style="margin: 10px;">
   <img src="./images/pa5.png" alt="Image pa5" width="250" style="margin: 10px;">
