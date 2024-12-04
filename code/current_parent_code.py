@@ -9,9 +9,8 @@ import speech
 def call_function():
     def add():
         n = 0
-        limite = 8
+        limite = 7
         add = True
-        time_to_stop = 2000
         while add:
 
             if n > limite:
@@ -53,8 +52,6 @@ def call_function():
         return "make_baby_sleep"
     elif value == 7:
         return "get_baby_direction"
-    elif value == 8:
-        return "get_baby_distance"
 
 
 def hashing(string):
@@ -662,6 +659,22 @@ while communication:
                 elif button_a.was_pressed():
                     send_packet(final_key, 6, "-1")
 
+        start_time = running_time()
+        while True:
+            m = radio.receive()
+            if m:
+                display.show(Image.SAD)
+                sleep(700)
+                break
+            else:
+                display.show(Image.ALL_CLOCKS)
+                total = elapsed_time = (running_time() - start_time) / 1000
+                if total >= 8:
+                    display.show(Image.HAPPY)
+                    music.play(music.POWER_UP)
+                    sleep(1000)
+                    break
+
     if f == "get_baby_direction":
         display.clear()
         message = "direction"
@@ -689,32 +702,6 @@ while communication:
                     if tupla[2] == "O":
                         sleep(1000)
                         display.show(Image.ARROW_W)
-
-    if f == "get_baby_distance":
-        send_packet(final_key, 8, "distance")
-        display.clear()
-        while True:
-            if button_a.was_pressed():
-                send_packet(final_key, 8, "finish")
-                break
-
-            m = radio.receive_full()
-            if m:
-                _, ping, _ = m
-                if ping > -30:
-                    display.show(Image.HEART)
-                    sleep(200)
-                elif -50 <= ping <= -30:
-                    display.show(Image.HAPPY)
-                    sleep(200)
-                elif -70 <= ping < -50:
-                    display.show(Image.MEH)
-                    sleep(200)
-                elif -120 <= ping < -70:
-                    display.show(Image.CONFUSED)
-                    sleep(200)
-                else:
-                    display.show(Image.SAD)
 
     message = radio.receive()
     if message:

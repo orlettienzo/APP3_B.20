@@ -356,9 +356,7 @@ def show_image():
 
 
 def rassurer_parent():
-    message = "calm"
-    vig_m = vigenere(message, final_key, decryption=False)
-    radio.send(tlv(2, vig_m))
+    send_packet(final_key, 3, "calm")
 
 
 def check_agitation():
@@ -606,7 +604,34 @@ while communication:
                                     display.scroll(" zZzZ")
                                     send_confirmation()
                             except ValueError:
+
                                 pass
+                sleeping = True
+                start_time = running_time()
+                while True:
+
+                    total = (running_time() - start_time) / 1000
+                    light_level = display.read_light_level()
+                    sound_level = microphone.sound_level()
+                    if total >= 8:
+                        display.show(Image.HAPPY)
+                        music.play(music.BA_DING)
+                        sleep(1500)
+                        break
+
+                    if light_level > 100:
+                        display.show(Image.SAD)
+                        music.play(music.BA_DING)
+                        send_packet(final_key, 1, "awake")
+                        break
+
+                    elif sound_level > 150:
+                        display.show(Image.SAD)
+                        music.play(music.BA_DING)
+                        send_packet(final_key, 1, "awake")
+                        break
+                    else:
+                        sleep(50)
 
             if tupla[2] == "direction":
                 sending_drection = True
@@ -631,16 +656,6 @@ while communication:
 
                     sleep(300)
 
-            if tupla[2] == "distance":
-                display.clear()
-                finish = False
-                while not finish:
-                    send_packet(final_key, 8, "ping")
-                    sleep(500)
-                    m = radio.receive()
-                    if m:
-                        finish = True
-
             if tupla[2][-3:] == "btc":
                 parts = tupla[2].split("_")
                 valeur_initiale = parts[0]
@@ -662,7 +677,5 @@ while communication:
 
         else:
             sleep(200)
-
-
     else:
         sleep(200)
