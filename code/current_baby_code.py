@@ -238,20 +238,20 @@ class DigitalWallet:
 
     cotation_actuelle = {
         "meta": {
-            "last_updated_at": "2024-11-28T23:59:59Z"
+            "last_updated_at": "2024-12-04T23:59:59Z"
         },
         "data": {
             "CAD": {
                 "code": "CAD",
-                "value": 134004.6817822797
+                "value": 139075.7381333135
             },
             "EUR": {
                 "code": "EUR",
-                "value": 90575.5390184203
+                "value": 93992.153692871
             },
             "USD": {
                 "code": "USD",
-                "value": 95682.0736956224
+                "value": 98837.1396640962
             }
         }
     }
@@ -289,32 +289,37 @@ class DigitalWallet:
     def show_valorisation(self):
         valeur_initiale = self.solde * DigitalWallet.ancienne_cotation["data"]["EUR"]["value"]
         valeur_finale = self.solde * DigitalWallet.cotation_actuelle["data"]["EUR"]["value"]
+
+        display.scroll("Val : ")
         if valeur_initiale != 0:
             pourcentage = ((valeur_finale - valeur_initiale) / valeur_initiale) * 100
             p = round(pourcentage, 1)
+            display.scroll("{} %".format(p))
         else:
             pourcentage = 0
             p = 0.0
 
-        currentbtc = valeur_finale / DigitalWallet.cotation_actuelle["data"]["EUR"]["value"]
-
-        display.scroll("Val : ")
+        sleep(100)
         euros = valeur_finale - valeur_initiale
-        if euros > 0:
+        if euros >= 0:
             display.scroll("+ {} EUR".format(round(euros, 2)))
         else:
             display.scroll("- {} EUR".format(round(abs(euros), 2)))
 
         sleep(300)
-        display.scroll("{} BTC".format(round(currentbtc, 7)))
-        sleep(300)
         if int(p) > 0:
             sleep(100)
             display.show(Image.ARROW_NE)
             sleep(100)
-            display.show(Image.ARROW_NE)
+            display.clear()
             sleep(100)
             display.show(Image.ARROW_NE)
+            sleep(100)
+            display.clear()
+            sleep(100)
+            display.show(Image.ARROW_NE)
+            sleep(100)
+            display.clear()
             sleep(100)
             display.show(Image.ARROW_NE)
             sleep(700)
@@ -360,7 +365,7 @@ def rassurer_parent():
 
 def check_agitation():
     agitation = accelerometer.get_strength()
-    if agitation < 1000:
+    if agitation < 2500:
         return "agitation faible"
     elif agitation < 3000:
         return "agitation moyenne"
@@ -455,7 +460,7 @@ while communication:
         else:
             sleep(200)
 
-    if button_a.is_pressed() and button_b.is_pressed():
+    if pin_logo.is_touched():
         sleep(1000)
         tupla = baby_wallet.cash_out_btc()
         if tupla != None:
@@ -464,7 +469,6 @@ while communication:
             display.show(Image.ALL_CLOCKS)
             sleep(100)
             display.scroll("Today : ")
-            display.scroll("{} BTC".format(round(btc, 7)))
             sleep(100)
             music.play(music.BA_DING)
             display.scroll("{} EUR".format(round(euros, 2)))

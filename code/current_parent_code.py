@@ -312,9 +312,9 @@ def send_btc(devises):
     btc = amount / current_btc
     message = str(amount) + "_" + str(btc) + "_" + "btc"
     send_packet(final_key, 4, message)
-    display.scroll("<- BTC")
     answer = False
     while not answer:
+        display.clear()
         message = radio.receive()
         if message:
             check = Image("00000:"
