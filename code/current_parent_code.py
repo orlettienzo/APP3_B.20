@@ -693,18 +693,7 @@ while communication:
                 tupla = unpack_data(m, final_key)
                 if tupla != None:
                     display.show("{}".format(tupla[2]))
-                    if tupla[2] == "N":
-                        sleep(1000)
-                        display.show(Image.ARROW_N)
-                    if tupla[2] == "S":
-                        sleep(1000)
-                        display.show(Image.ARROW_S)
-                    if tupla[2] == "E":
-                        sleep(1000)
-                        display.show(Image.ARROW_E)
-                    if tupla[2] == "O":
-                        sleep(1000)
-                        display.show(Image.ARROW_W)
+                    sleep(100)
 
     message = radio.receive()
     if message:
