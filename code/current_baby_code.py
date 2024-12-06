@@ -569,8 +569,9 @@ while communication:
             if tupla[2] == "hello":
                 display.show(Image.HAPPY)
                 speech.say("I am good")
-                sleep(2000)
+                sleep(200)
                 send_confirmation()
+                sleep(2000)
 
             if tupla[2] == "sleep":
                 brightness = 7
@@ -625,12 +626,14 @@ while communication:
                         display.show(Image.SAD)
                         music.play(music.BA_DING)
                         send_packet(final_key, 1, "awake")
+                        sleep(2000)
                         break
 
                     elif sound_level > 150:
                         display.show(Image.SAD)
                         music.play(music.BA_DING)
                         send_packet(final_key, 1, "awake")
+                        sleep(2000)
                         break
                     else:
                         sleep(50)

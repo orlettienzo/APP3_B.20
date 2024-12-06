@@ -5,7 +5,6 @@ import random
 import music
 import speech
 
-
 def call_function():
     def add():
         n = 0
@@ -43,16 +42,15 @@ def call_function():
     elif value == 2:
         return "ask_temperature"
     elif value == 3:
-        return "send_btc"
-    elif value == 4:
         return "check_etat"
+    elif value == 4:
+        return "make_baby_sleep"
     elif value == 5:
         return "talk"
     elif value == 6:
-        return "make_baby_sleep"
-    elif value == 7:
         return "get_baby_direction"
-
+    elif value == 7:
+        return "send_btc"
 
 def hashing(string):
     def to_32(value):
@@ -72,8 +70,6 @@ def hashing(string):
             x = -2
         return str(x)
     return ""
-
-
 def vigenere(message, key, decryption=False):
     text = ""
     key_length = len(key)
@@ -99,7 +95,6 @@ def vigenere(message, key, decryption=False):
             text += char
     return text
 
-
 def tlv(type, message):
     message = message.strip()
     nonce = create_nonce(nonce_lst)
@@ -110,23 +105,20 @@ def tlv(type, message):
     _tlv = "{}|{}|{}".format(type, lenght, contenu)
     return _tlv
 
-
 def get_hash(string):
     return hashing(string)
-
 
 def send_packet(key, type, content):
     vig_cont = vigenere(content, key, decryption=False)
     packet = tlv(type, vig_cont)
     radio.send(packet)
 
-
 def stock_nonce(element, liste):
     if element not in liste:
         liste.append(element)
     else:
-        display.scroll("Duplicata")
-
+        e = int(element)
+        liste.append(-e)
 
 def unpack_data(encrypted_packet, key):
     parts = encrypted_packet.split("|")
@@ -138,7 +130,6 @@ def unpack_data(encrypted_packet, key):
     message = vigenere(m[1], key, decryption=True)
     _unpacked = (type, int(lenght), message)
     return _unpacked
-
 
 def receive_packet(packet_received, key):
     if packet_received == None:
@@ -157,7 +148,6 @@ def receive_packet(packet_received, key):
 
     return (type, lenght, message)
 
-
 def calculate_challenge_response(challenge, key):
     m = radio.receive()
     if m:
@@ -170,13 +160,11 @@ def calculate_challenge_response(challenge, key):
     else:
         sleep(200)
 
-
 def next_challenge(seed):
     seed = int(seed)
     random.seed(seed)
     value = random.randint(1, 1000)
     return value
-
 
 def establish_connexion_Parent(type, key):
     hash_key = hashing(key)
@@ -191,7 +179,6 @@ def establish_connexion_Parent(type, key):
                 return 1
     return 0
 
-
 def create_nonce(lst):
     if len(lst) == 5000:
         lst = []
@@ -202,10 +189,8 @@ def create_nonce(lst):
     else:
         create_nonce(lst)
 
-
 def main():
     return True
-
 
 key = "H"
 hash_pass = hashing(key)
@@ -634,7 +619,7 @@ while communication:
             m = radio.receive()
             if m:
                 display.show(Image.HAPPY)
-                sleep(500)
+                sleep(1000)
                 answer = True
             else:
                 sleep(200)
@@ -739,3 +724,4 @@ while communication:
 
     else:
         sleep(200)
+
