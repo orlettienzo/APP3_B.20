@@ -18,14 +18,17 @@ def call_function():
             if n < 10:
                 display.show("{}".format(n))
 
-            if button_b.was_pressed():
+            if button_b.is_pressed():
                 n += 1
+                sleep(300)
 
-            elif button_a.was_pressed():
+            elif button_a.is_pressed():
                 if n >= 1:
                     n -= 1
+                    sleep(300)
                 if n == 0:
-                    n = 8
+                    n = limite
+                    sleep(300)
                 else:
                     pass
 
@@ -550,6 +553,7 @@ while communication:
     show_image()
     f = ""
     if button_a.was_pressed():
+        sleep(300)
         f = call_function()
 
     if f == "get_milk":
