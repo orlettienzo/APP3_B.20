@@ -64,8 +64,8 @@
 </ul>
 <br>
 
-<h2 align="left">🎬 Vidéo Exemple</h2>
-<p>📹 Vous aurez bientôt le lien vers la vidéo de démonstration de notre projet 🤠</p>
+<h2 align="left">🎬 Vidéo</h2>
+<p>📹<a href="videos/video_demonstration.mp4.zip" download>Download Video Demonstration</a></p>
 <br>
 
 <h2 align="left">🚀 Voulez-vous commencer à coder un micro:bit?</h2>
